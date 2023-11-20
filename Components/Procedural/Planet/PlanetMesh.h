@@ -3,7 +3,6 @@
 #include <vector>
 
 #include <glm/glm.hpp>
-#include "..\..\..\Libraries\OpenSimplexNoise.hpp" // Credit to Mark A. Ropper
 
 #ifndef SIDE_FRONT
 #define SIDE_FRONT		glm::vec3(90, 0, 0)

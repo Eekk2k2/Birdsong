@@ -4,6 +4,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+#ifndef SHADER_FROM
 #ifndef SHADER_FROMCODE
 #define SHADER_FROMCODE 0
 #endif // !FROMCODE
@@ -13,6 +14,7 @@
 #endif // !FROMPATH
 
 typedef int SHADER_FROM;
+#endif
 
 #include <glad/glad.h> // include glad to get all the required OpenGL headers
 #include <glm/glm.hpp>

@@ -20,11 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Data\Shader\ComputeShader.h" />
     <ClInclude Include="Data\Cubemap.h" />
     <ClInclude Include="Components\Extender.h" />
     <ClInclude Include="Assets\Extenders\ExampleExtender.h" />
     <ClInclude Include="Holder.h" />
-    <ClInclude Include="Libraries\OpenSimplexNoise.hpp" />
+    <ClInclude Include="Extra\Marching Cubes\CPU\MarchingCubesCPU.h" />
+    <ClInclude Include="MarchingCubesGPU.h" />
     <ClInclude Include="Objects\Camera\CameraControllers\BasicCameraMovement.h" />
     <ClInclude Include="Objects\MainObject.h" />
     <ClInclude Include="Objects\Camera\CameraControllers\PivotCameraController.h" />
@@ -33,19 +35,23 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="Libraries\stb_image.h" />
     <ClInclude Include="Data\Mesh.h" />
-    <ClInclude Include="Data\Shader.h" />
+    <ClInclude Include="Data\Shader\Shader.h" />
     <ClInclude Include="Components\Renderer.h" />
     <ClInclude Include="Objects\Object.h" />
     <ClInclude Include="Components\Transform.h" />
     <ClInclude Include="Data\Texture.h" />
     <ClInclude Include="Components\Procedural\Planet\PlanetMesh.h" />
+    <ClInclude Include="Libraries\OpenSimplexNoise.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Data\Shader\ComputeShader.cpp" />
     <ClCompile Include="Data\Cubemap.cpp" />
     <ClCompile Include="Components\Extender.cpp" />
     <ClCompile Include="Assets\Extenders\ExampleExtender.cpp" />
     <ClCompile Include="Holder.cpp" />
+    <ClCompile Include="Extra\Marching Cubes\CPU\MarchingCubesCPU.cpp" />
+    <ClCompile Include="MarchingCubesGPU.cpp" />
     <ClCompile Include="Objects\Camera\CameraControllers\BasicCameraMovement.cpp" />
     <ClCompile Include="Objects\MainObject.cpp" />
     <ClCompile Include="Objects\Camera\CameraControllers\PivotCameraController.cpp" />
@@ -55,12 +61,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Libraries\stb_image.cpp" />
     <ClCompile Include="Data\Mesh.cpp" />
-    <ClCompile Include="Data\Shader.cpp" />
+    <ClCompile Include="Data\Shader\Shader.cpp" />
     <ClCompile Include="Components\Renderer.cpp" />
     <ClCompile Include="Objects\Object.cpp" />
     <ClCompile Include="Components\Transform.cpp" />
     <ClCompile Include="Data\Texture.cpp" />
     <ClCompile Include="Components\Procedural\Planet\PlanetMesh.cpp" />
+    <ClCompile Include="Libraries\OpenSimplexNoise.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Textures\Area4096.png" />
@@ -78,6 +85,7 @@
     <ProjectGuid>{800967ec-e9ef-46d4-99e1-ac5851d28076}</ProjectGuid>
     <RootNamespace>Procedural</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Birdsong</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
