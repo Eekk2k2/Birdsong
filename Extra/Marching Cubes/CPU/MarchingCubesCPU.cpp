@@ -22,7 +22,7 @@ std::vector<double> MarchingCubesCPU::GenerateFlatChunk(glm::ivec2 gridPos, uint
 					data.push_back(_data[i]);
 			}
 
-	return data;
+	return data;	
 }
 
 double MarchingCubesCPU::SampleFlatPoint(glm::dvec3 point)

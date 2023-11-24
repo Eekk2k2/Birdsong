@@ -74,6 +74,9 @@
     <Image Include="Assets\Textures\Normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Shaders\Compute\MarchingCubesMesh.comp" />
+    <None Include="Assets\Shaders\Compute\MarchingCubesNoise.comp" />
+    <None Include="Assets\Shaders\Compute\CubesMesh.comp" />
     <None Include="Assets\Shaders\default.frag" />
     <None Include="Assets\Shaders\default.vert" />
     <None Include="Assets\Shaders\lighting.frag" />

@@ -1,6 +1,11 @@
 #version 430 core
 
-layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout (local_size_x = 4, local_size_y = 2, local_size_z = 4) in;
+
+layout(std430, binding = 0) buffer Field_OUT {
+	float field[4096][8]; // Good for a 16 * 16 * 16 chunk
+};
+
 
 /////////////// K.jpg's Re-oriented 8-Point BCC Noise (OpenSimplex2S) ////////////////
 ////////////////////// Output: vec4(dF/dx, dF/dy, dF/dz, value) //////////////////////
@@ -95,3 +100,23 @@ vec4 openSimplex2SDerivatives_ImproveXY(vec3 X) {
 }
 
 //////////////////////////////// End noise code ////////////////////////////////
+
+
+// Each time this is run we go over a single cell
+void main() {
+   	vec3 id = vec3(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y, gl_GlobalInvocationID.z); 
+
+	// Calculate the global invocation index
+    uint globalIndex = gl_LocalInvocationID.x + gl_WorkGroupSize.x * (gl_LocalInvocationID.y + gl_WorkGroupSize.y * (gl_LocalInvocationID.z + gl_WorkGroupSize.z * (gl_WorkGroupID.x + gl_NumWorkGroups.x * (gl_WorkGroupID.y + gl_NumWorkGroups.y * gl_WorkGroupID.z))));
+
+    // Calculate the noise for every point - currently its not efficient since multiple points 
+    // are shared between cells and i do not account for that
+	field[globalIndex][0] = openSimplex2SDerivatives_ImproveXY(id).w;
+    field[globalIndex][1] = openSimplex2SDerivatives_ImproveXY(id + vec3(1.0, 0.0, 0.0)).w;
+    field[globalIndex][2] = openSimplex2SDerivatives_ImproveXY(id + vec3(1.0, 0.0, 1.0)).w;
+    field[globalIndex][3] = openSimplex2SDerivatives_ImproveXY(id + vec3(0.0, 0.0, 1.0)).w;
+    field[globalIndex][4] = openSimplex2SDerivatives_ImproveXY(id + vec3(0.0, 1.0, 0.0)).w;
+    field[globalIndex][5] = openSimplex2SDerivatives_ImproveXY(id + vec3(1.0, 1.0, 0.0)).w;
+    field[globalIndex][6] = openSimplex2SDerivatives_ImproveXY(id + vec3(1.0, 1.0, 1.0)).w;
+    field[globalIndex][7] = openSimplex2SDerivatives_ImproveXY(id + vec3(0.0, 1.0, 1.0)).w;
+}

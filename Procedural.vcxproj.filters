@@ -172,5 +172,8 @@
     <None Include="Assets\Shaders\lighting.frag" />
     <None Include="Assets\Shaders\default.frag" />
     <None Include="Assets\Shaders\default.vert" />
+    <None Include="Assets\Shaders\Compute\MarchingCubesMesh.comp" />
+    <None Include="Assets\Shaders\Compute\MarchingCubesNoise.comp" />
+    <None Include="Assets\Shaders\Compute\CubesMesh.comp" />
   </ItemGroup>
 </Project>
