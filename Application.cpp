@@ -114,6 +114,10 @@ void Application::Start() {
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,		0.0f, 1.0f
 	};
 
+	camera = std::make_shared<Camera>(applicationWindow);
+	mainObject = std::make_unique<MainObject>(camera);
+	mainObject->transform->SetLocalPosition(glm::vec3(0.0, 1.0, 0.0));
+
 	mainObject->renderer->mesh->SetAllData(planeVertices);
 	mainObject->renderer->shader->Set(SHADER_FROMPATH, ".\\Assets\\Shaders\\default.vert", ".\\Assets\\Shaders\\default.frag");
 	mainObject->renderer->AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Area4096.png", false), "albedoMap");
@@ -121,7 +125,6 @@ void Application::Start() {
 	mainObject->renderer->AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Metallic.png", false), "metallicMap");
 	mainObject->renderer->AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Roughness.png", false), "roughnessMap");
 	mainObject->renderer->AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Ao.png", false), "aoMap");
-
 }
 
 float lastTime = 0.0f, frameUpdate = 2000, frame = 0;
@@ -142,7 +145,7 @@ void Application::Update()
 	mainObject->renderer->shader->SetVec3("albedo", 1.0f, 1.0f, 1.0f);
 	mainObject->renderer->shader->SetFloat("ao", 1.0f);
 
-	mainObject->renderer->shader->SetMat3("normalMatrix", glm::transpose(glm::inverse(glm::mat3(glm::translate(glm::mat4(1.0f), mainObject->transform->position.position)))));
+	mainObject->renderer->shader->SetMat3("normalMatrix", glm::transpose(glm::inverse(glm::mat3(glm::translate(glm::mat4(1.0f), mainObject->transform->GetPosition())))));
 
 	mainObject->renderer->shader->SetVec3("lightPositions[0]", glm::vec3(1.0f, 2.0f, 1.0f));
 	mainObject->renderer->shader->SetVec3("lightColors[0]", glm::vec3(1.0f, 1.0f, 1.0f));

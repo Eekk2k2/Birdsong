@@ -6,9 +6,14 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include <vector>
 
 struct Position {
 public:
+	void RecalculatePosition(), RecalculateLocalPosition();
+	void SetPosition(glm::vec3 position), SetLocalPosition(glm::vec3 localPosition);
+	glm::vec3 GetPosition(), GetLocalPosition();
+
 	glm::vec3 position;
 
 	glm::vec3 localPosition;
@@ -30,18 +35,99 @@ public:
 	glm::vec3 localScale;
 };
 
-class Transform
-{
+//class Transform
+//{
+//public:
+//	Transform();
+//	~Transform();
+//
+//	Position position;
+//	Rotation rotation;
+//	Scale scale;
+//
+//	Transform* parentTransform;
+//	std::vector<Transform*> childTransforms;
+//
+//	glm::mat4 GetModel();
+//};
+
+class Transform {
 public:
-	Transform();
-	~Transform();
+	/*						   Transform						*/
+	Transform(), Transform(std::shared_ptr<Transform> parentTransform), ~Transform();
 
-	Position position;
-	Rotation rotation;
-	Scale scale;
+	void SetParent(std::shared_ptr<Transform> parentTransform);
 
-	Transform* parentTransform;
+	std::shared_ptr<Transform>	GetParentShared();
+
+	Transform*					GetParentRaw();
+
+	void AddChild(Transform* childTransform);
 
 	glm::mat4 GetModel();
-};
 
+	/*							Position						*/
+
+	/// <summary>
+	/// Recalcuate so it matches with the local/global counterpart.
+	/// If its local it will also recalculate the global for every 
+	/// child.
+	/// </summary>
+	void RecalculatePosition(), RecalculateLocalPosition(), RecalculateChildrensPosition(), RecalculateChildrensLocalPosition();
+
+	/// <summary>
+	/// Set the either local or global position and recalcualte 
+	/// the other. If its local it will also recalculate the global 
+	/// for every child.
+	/// </summary>
+	void SetPosition(glm::vec3 newPosition), SetLocalPosition(glm::vec3 newLocalPosition);
+
+	/// <summary>
+	/// Retrieve either the local or global position.
+	/// </summary>
+	glm::vec3 GetPosition(), GetLocalPosition();
+
+	/*							Scale						*/
+
+	void RecalculateScale(), RecalculateLocalScale(), RecalculateChildrensScale(), RecalculateChildrensLocalScale();
+
+	void SetScale(glm::vec3 newScale), SetLocalScale(glm::vec3 newLocalScale);
+
+
+private:
+	/*						   Transform						*/
+
+	/// <summary>
+	/// The transform this transform is attached to/the child of.
+	/// </summary>
+	std::shared_ptr<Transform> parentTransform;
+
+	/// <summary>
+	/// The transforms of who this transform is parent to.
+	/// </summary>
+	std::vector<Transform*> childTransforms;						// TODO : Find a better solution on storing the children
+
+	/*							Position						*/
+	
+	/// <summary>
+	/// The global position. 
+	/// </summary>
+	glm::vec3 position; 
+
+	/// <summary>
+	/// The position relative to the parent's global position.
+	/// </summary>
+	glm::vec3 localPosition;
+
+	/*							Scale						*/
+
+	/// <summary>
+	/// The global scale. 
+	/// </summary>
+	glm::vec3 scale;
+
+	/// <summary>
+	/// The scale relative to the parent's global scale.
+	/// </summary>
+	glm::vec3 localScale;
+};

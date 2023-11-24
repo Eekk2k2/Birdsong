@@ -13,7 +13,7 @@
 #include "Objects/Camera/Camera.h"
 #include "Objects/MainObject.h"
 
-#include "Data/Mesh.h"
+#include "Data/Mesh/Mesh.h"
 #include "Data/Shader/Shader.h"
 
 #include "Components/Renderer.h"

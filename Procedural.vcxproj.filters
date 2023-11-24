@@ -24,7 +24,7 @@
     <ClInclude Include="Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Data\Mesh.h">
+    <ClInclude Include="Data\Mesh\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Data\Shader\Shader.h">
@@ -98,7 +98,7 @@
     <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Data\Mesh.cpp">
+    <ClCompile Include="Data\Mesh\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Data\Shader\Shader.cpp">

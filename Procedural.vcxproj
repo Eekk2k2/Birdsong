@@ -34,7 +34,7 @@
     <ClInclude Include="Objects\Camera\Camera.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Libraries\stb_image.h" />
-    <ClInclude Include="Data\Mesh.h" />
+    <ClInclude Include="Data\Mesh\Mesh.h" />
     <ClInclude Include="Data\Shader\Shader.h" />
     <ClInclude Include="Components\Renderer.h" />
     <ClInclude Include="Objects\Object.h" />
@@ -60,7 +60,7 @@
     <ClCompile Include="Libraries\glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Libraries\stb_image.cpp" />
-    <ClCompile Include="Data\Mesh.cpp" />
+    <ClCompile Include="Data\Mesh\Mesh.cpp" />
     <ClCompile Include="Data\Shader\Shader.cpp" />
     <ClCompile Include="Components\Renderer.cpp" />
     <ClCompile Include="Objects\Object.cpp" />

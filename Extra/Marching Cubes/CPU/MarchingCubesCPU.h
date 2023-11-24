@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "..\..\..\Libraries\OpenSimplexNoise.h"
-#include "..\..\..\Data\Mesh.h"
+#include "..\..\..\Data\Mesh\Mesh.h"
 
 struct GridCell
 {

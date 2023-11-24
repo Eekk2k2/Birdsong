@@ -28,7 +28,7 @@ void Renderer::Draw()
 {
 	this->shader->Use();
 
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), this->transfrom->position.position);
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), this->transfrom->GetPosition());
 	this->shader->SetMat4("model", model);
 	this->shader->SetMat4("view", camera->View());
 	this->shader->SetMat4("projection", camera->Projection());
