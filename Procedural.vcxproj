@@ -20,67 +20,70 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Data\Holder.h" />
+    <ClInclude Include="Data\Extender.h" />
+    <ClInclude Include="Physong\Collider.h" />
     <ClInclude Include="Data\Shader\ComputeShader.h" />
-    <ClInclude Include="Data\Cubemap.h" />
-    <ClInclude Include="Components\Extender.h" />
-    <ClInclude Include="Assets\Extenders\ExampleExtender.h" />
-    <ClInclude Include="Holder.h" />
-    <ClInclude Include="Extra\Marching Cubes\CPU\MarchingCubesCPU.h" />
-    <ClInclude Include="MarchingCubesGPU.h" />
-    <ClInclude Include="Objects\Camera\CameraControllers\BasicCameraMovement.h" />
-    <ClInclude Include="Objects\MainObject.h" />
-    <ClInclude Include="Objects\Camera\CameraControllers\PivotCameraController.h" />
-    <ClInclude Include="Objects\Camera\CameraController.h" />
+    <ClInclude Include=".away\Cubemap.h" />
+    <ClInclude Include="Data\Material\Material.h" />
+    <ClInclude Include="Objects\Object.h" />
     <ClInclude Include="Objects\Camera\Camera.h" />
     <ClInclude Include="main.h" />
-    <ClInclude Include="Libraries\stb_image.h" />
+    <ClInclude Include="libraries\Other\stb_image.h" />
     <ClInclude Include="Data\Mesh\Mesh.h" />
     <ClInclude Include="Data\Shader\Shader.h" />
     <ClInclude Include="Components\Renderer.h" />
-    <ClInclude Include="Objects\Object.h" />
+    <ClInclude Include="Objects\Objectoid.h" />
     <ClInclude Include="Components\Transform.h" />
     <ClInclude Include="Data\Texture.h" />
-    <ClInclude Include="Components\Procedural\Planet\PlanetMesh.h" />
-    <ClInclude Include="Libraries\OpenSimplexNoise.h" />
+    <ClInclude Include="libraries\Other\OpenSimplexNoise.h" />
+    <ClInclude Include="Extenders\Application\RenderingE.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Data\Shader\ComputeShader.cpp" />
-    <ClCompile Include="Data\Cubemap.cpp" />
-    <ClCompile Include="Components\Extender.cpp" />
-    <ClCompile Include="Assets\Extenders\ExampleExtender.cpp" />
-    <ClCompile Include="Holder.cpp" />
-    <ClCompile Include="Extra\Marching Cubes\CPU\MarchingCubesCPU.cpp" />
-    <ClCompile Include="MarchingCubesGPU.cpp" />
-    <ClCompile Include="Objects\Camera\CameraControllers\BasicCameraMovement.cpp" />
-    <ClCompile Include="Objects\MainObject.cpp" />
-    <ClCompile Include="Objects\Camera\CameraControllers\PivotCameraController.cpp" />
-    <ClCompile Include="Objects\Camera\CameraController.cpp" />
+    <ClCompile Include=".away\Cubemap.cpp" />
+    <ClCompile Include="Data\Material\Material.cpp" />
+    <ClCompile Include="Data\Holder.cpp" />
+    <ClCompile Include="Data\Extender.cpp" />
+    <ClCompile Include="Objects\Object.cpp" />
     <ClCompile Include="Objects\Camera\Camera.cpp" />
-    <ClCompile Include="Libraries\glad.c" />
+    <ClCompile Include="libraries\Other\glad.c" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Libraries\stb_image.cpp" />
+    <ClCompile Include="libraries\Other\stb_image.cpp" />
     <ClCompile Include="Data\Mesh\Mesh.cpp" />
     <ClCompile Include="Data\Shader\Shader.cpp" />
     <ClCompile Include="Components\Renderer.cpp" />
-    <ClCompile Include="Objects\Object.cpp" />
+    <ClCompile Include="Objects\Objectoid.cpp" />
     <ClCompile Include="Components\Transform.cpp" />
     <ClCompile Include="Data\Texture.cpp" />
-    <ClCompile Include="Components\Procedural\Planet\PlanetMesh.cpp" />
-    <ClCompile Include="Libraries\OpenSimplexNoise.cpp" />
+    <ClCompile Include="libraries\Other\OpenSimplexNoise.cpp" />
+    <ClCompile Include="Extenders\Application\RenderingE.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Assets\Textures\Ao.png" />
     <Image Include="Assets\Textures\Area4096.png" />
+    <Image Include="Assets\Textures\Metallic.png" />
     <Image Include="Assets\Textures\Normal.png" />
+    <Image Include="Assets\Textures\Roughness.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Shaders\Compute\MarchingCubesMesh.comp" />
-    <None Include="Assets\Shaders\Compute\MarchingCubesNoise.comp" />
-    <None Include="Assets\Shaders\Compute\CubesMesh.comp" />
+    <None Include=".gitignore" />
+    <None Include="Assets\Shaders\Compute\Procedural\Environment\MarchingCubesMesh.comp" />
+    <None Include="Assets\Shaders\Compute\Procedural\Environment\MarchingCubesNoise.comp" />
+    <None Include="Assets\Shaders\Compute\Procedural\Environment\CubesMesh.comp" />
+    <None Include="Assets\Shaders\Compute\Procedural\Environment\Flat\Heightmap_GPU.comp" />
     <None Include="Assets\Shaders\default.frag" />
     <None Include="Assets\Shaders\default.vert" />
     <None Include="Assets\Shaders\lighting.frag" />
     <None Include="Assets\Shaders\lighting.vert" />
+    <None Include="README.md" />
+    <None Include="Tools\GridIndicesCalculator.py" />
+    <None Include="Tools\GridPointPositionCalculator.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Tools\OutputIndices.txt" />
+    <Text Include="Tools\OutputPointPosition.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -136,8 +139,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\OpenGL\Include;$(IncludePath);</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\OpenGL\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath);$(ProjectDir)\Includes</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath);$(ProjectDir)\Libraries</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\OpenGL\Include;$(IncludePath);</IncludePath>
@@ -177,6 +180,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

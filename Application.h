@@ -8,17 +8,15 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-#include "Holder.h"
-
 #include "Objects/Camera/Camera.h"
-#include "Objects/MainObject.h"
+#include "Objects/Object.h"
 
+#include "Data/Holder.h"
 #include "Data/Mesh/Mesh.h"
 #include "Data/Shader/Shader.h"
+#include "Data/Shader/ComputeShader.h"
 
 #include "Components/Renderer.h"
-
-#include "Data/Shader/ComputeShader.h"
 
 
 class Application
@@ -31,19 +29,16 @@ public:
 
 	GLFWwindow* applicationWindow;
 
-	float timeSinceMaximize;
-	float timeSinceMinimize;
+	float timeSinceMaximize, timeSinceMinimize;
 
-	void Start();
+	std::shared_ptr<Holder> holder;
 
-	void Update();
+	void Start(), Update();
 
 	void ProcessInput();
 
-	void Terminate();
-
-	void Terminate(std::string errorMessage);
+	void Terminate(), Terminate(std::string errorMessage);
 private:
-	std::unique_ptr<Holder> holder;
+
 };
 

@@ -35,22 +35,6 @@ public:
 	glm::vec3 localScale;
 };
 
-//class Transform
-//{
-//public:
-//	Transform();
-//	~Transform();
-//
-//	Position position;
-//	Rotation rotation;
-//	Scale scale;
-//
-//	Transform* parentTransform;
-//	std::vector<Transform*> childTransforms;
-//
-//	glm::mat4 GetModel();
-//};
-
 class Transform {
 public:
 	/*						   Transform						*/
@@ -93,6 +77,7 @@ public:
 
 	void SetScale(glm::vec3 newScale), SetLocalScale(glm::vec3 newLocalScale);
 
+	glm::mat3 GetNormalMatrix();
 
 private:
 	/*						   Transform						*/
@@ -111,13 +96,16 @@ private:
 	
 	/// <summary>
 	/// The global position. 
-	/// </summary>
+	/// </summary>	
 	glm::vec3 position; 
 
 	/// <summary>
 	/// The position relative to the parent's global position.
 	/// </summary>
 	glm::vec3 localPosition;
+
+	// State change check
+	glm::vec3 lastPosition, lastLocalPosition;
 
 	/*							Scale						*/
 
@@ -130,4 +118,13 @@ private:
 	/// The scale relative to the parent's global scale.
 	/// </summary>
 	glm::vec3 localScale;
+
+	// State change check
+	glm::vec3 lastScale, lastLocalScale;
+
+	/*						Mr anderson						*/
+
+	bool updatedSinceLastFrame;
+	glm::mat4 model;
+	glm::mat3 normalMatrix;
 };

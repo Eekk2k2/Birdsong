@@ -5,17 +5,38 @@
 
 Transform::Transform() 
 {
-	this->position = glm::vec3(0.0, 0.0, 0.0);
-	this->localPosition = glm::vec3(0.0, 0.0, 0.0);
+	this->position			= glm::vec3(0.0, 0.0, 0.0);
+	this->lastPosition		= glm::vec3(-1.0, 0.0, -1.0);
+	this->localPosition		= glm::vec3(0.0, 0.0, 0.0);
+	this->lastLocalPosition = glm::vec3(-1.0, -1.0, -1.0);
+
+	this->scale				= glm::vec3(1.0, 1.0, 1.0);
+	this->lastScale			= glm::vec3(-1.0, -1.0, -1.0);
+	this->localScale		= glm::vec3(1.0, 1.0, 1.0);
+	this->lastLocalScale	= glm::vec3(-1.0, 1.0, -1.0);
+
+	this->model = GetModel();
+
+	updatedSinceLastFrame	= false;
+	this->normalMatrix		= GetNormalMatrix();
 }
 
 Transform::Transform(std::shared_ptr<Transform> parentTransform)
 { 
-	this->position = glm::vec3(0.0, 0.0, 0.0);
-	this->localPosition = glm::vec3(0.0, 0.0, 0.0);
+	this->position			= glm::vec3(0.0, 0.0, 0.0);
+	this->lastPosition		= glm::vec3(0.0, 0.0, 0.0);
+	this->localPosition		= glm::vec3(0.0, 0.0, 0.0);
+	this->lastLocalPosition = glm::vec3(0.0, 0.0, 0.0);
 
-	this->scale = glm::vec3(1.0, 1.0, 1.0);
-	this->localScale = glm::vec3(1.0, 1.0, 1.0);
+	//this->scale				= glm::vec3(1.0, 1.0, 1.0);
+	//this->lastScale			= glm::vec3(1.0, 1.0, 1.0);
+	//this->localScale		= glm::vec3(1.0, 1.0, 1.0);
+	//this->lastLocalScale	= glm::vec3(1.0, 1.0, 1.0);
+
+	this->model = GetModel();
+
+	updatedSinceLastFrame	= false;
+	this->normalMatrix		= GetNormalMatrix();
 
 	SetParent(parentTransform);
 }
@@ -44,7 +65,25 @@ void Transform::AddChild(Transform* childTransform)
 
 glm::mat4 Transform::GetModel() 
 {
-	return glm::translate(glm::mat4(1.0), this->position);
+	// If no values are updated we use the old matrix
+	
+	if (this->position == this->lastPosition || this->localPosition == this->lastLocalPosition || this->scale == this->lastScale || this->localScale == this->lastLocalScale)  
+	{
+		updatedSinceLastFrame = false; 
+		return this->model;
+	}
+	else {
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), this->scale);
+		this->model = glm::translate(glm::mat4(1.0f), this->position) * scaleMatrix;
+
+		this->lastPosition		= this->position;
+		this->lastLocalPosition = this->localPosition;
+		this->lastScale			= this->scale;
+		this->lastLocalScale	= this->localScale;
+
+		updatedSinceLastFrame	= true;
+		return this->model;
+	}
 }
 
 /*															Position															*/
@@ -116,9 +155,9 @@ void Transform::RecalculateScale()
 {
 	if (this->parentTransform != nullptr)
 		this->scale = this->localScale * this->parentTransform->scale;
-	else this->scale = this->localPosition;
+	else this->scale = this->localScale;
 
-	RecalculateChildrensScale;
+	RecalculateChildrensScale();
 }
 
 void Transform::RecalculateLocalScale() 
@@ -138,6 +177,12 @@ void Transform::RecalculateChildrensLocalScale()
 {
 	for (size_t i = 0; i < this->childTransforms.size(); i++)
 		this->childTransforms[i]->RecalculateChildrensLocalScale();
+}
+
+glm::mat3 Transform::GetNormalMatrix()
+{
+	this->normalMatrix = glm::transpose(glm::inverse(glm::mat3(glm::translate(glm::mat4(1.0f), this->GetPosition()))));
+	return this->normalMatrix;
 }
 
 void Transform::SetScale(glm::vec3 newScale)

@@ -13,7 +13,7 @@ ComputeShader::ComputeShader(SHADER_FROM from, const char* compute)
 ComputeShader::~ComputeShader()
 {
 	glDeleteBuffers(this->shaderStorageBuffers.size(), this->shaderStorageBuffers.data());
-	for (size_t i = 0; i < this->shaderStorageBuffers.size(); i++) this->shaderStorageBuffers[i] = 0;
+	for (int i = 0; i < this->shaderStorageBuffers.size(); i++) this->shaderStorageBuffers[i] = 0;
 
 	glDeleteProgram(this->shaderProgramId);
 	

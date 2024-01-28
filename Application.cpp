@@ -1,22 +1,9 @@
 #include "Application.h"
 
 std::shared_ptr<Camera> camera;
-std::unique_ptr<MainObject> mainObject;
 
-std::unique_ptr<ComputeShader> marchingCubesMeshComputeShader;
-std::unique_ptr<ComputeShader> marchingCubesNoiseComputeShader;
-
-struct Triangle {
-	double point0[4];
-	double point1[4];
-	double point2[4];
-
-	double normal[4];
-	
-	double texcoord0[2];
-	double texcoord1[2];
-	double texcoord2[2];
-};
+Identifier testMeshIdentifier;
+unsigned int depthMapFBO;
 
 Application::Application() {
 	this->timeSinceMaximize = 0.0f;
@@ -27,6 +14,7 @@ Application::Application() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//glfwWindowHint(GLFW_SAMPLES, 4);
 
 	// Hides the command promt
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
@@ -42,7 +30,9 @@ Application::Application() {
 
 	// Callbacks
 	glfwMakeContextCurrent(applicationWindow);
-	glfwSwapInterval(0); // Disables vsync
+
+	// Disables vsync
+	glfwSwapInterval(0);
 
 	//Initializing the GLAD
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -52,8 +42,9 @@ Application::Application() {
 	}
 
 	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_MULTISAMPLE); 
 
-	this->holder = std::make_unique<Holder>();
+	holder = std::make_shared<Holder>();
 }
 
 Application::~Application() { }
@@ -114,20 +105,66 @@ void Application::Start() {
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,		0.0f, 1.0f
 	};
 
-	camera = std::make_shared<Camera>(applicationWindow);
-	mainObject = std::make_unique<MainObject>(camera);
-	mainObject->transform->SetLocalPosition(glm::vec3(0.0, 1.0, 0.0));
+	/* Create materials */
 
-	mainObject->renderer->mesh->SetAllData(planeVertices);
-	mainObject->renderer->shader->Set(SHADER_FROMPATH, ".\\Assets\\Shaders\\default.vert", ".\\Assets\\Shaders\\default.frag");
-	mainObject->renderer->AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Area4096.png", false), "albedoMap");
-	mainObject->renderer->AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Normal.png", false), "normalMap");
-	mainObject->renderer->AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Metallic.png", false), "metallicMap");
-	mainObject->renderer->AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Roughness.png", false), "roughnessMap");
-	mainObject->renderer->AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Ao.png", false), "aoMap");
+	Identifier testMaterialIdentifier = holder->AddNewMaterial();
+	Material& testMaterial = holder->GetHeldMaterial(testMaterialIdentifier);
+	testMaterial.shader->Set(SHADER_FROMPATH, ".\\Assets\\Shaders\\default.vert", ".\\Assets\\Shaders\\default.frag");
+	testMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Area4096.png", false, ""), "albedoMap");
+	testMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Normal.png", false, ""), "normalMap");
+	testMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Metallic.png", false, ""), "metallicMap");
+	testMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Roughness.png", false, ""), "roughnessMap");
+	testMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Ao.png", false, ""), "aoMap");
+
+	/* Create meshes */
+
+	testMeshIdentifier = holder->AddNewMesh(planeVertices);
+
+	/* Create objects */
+
+	camera = std::make_shared<Camera>(applicationWindow);
+
+	Object& groundFloor = holder->GetHeldObject(holder->AddNewObject(holder));
+	groundFloor.AddMesh(testMeshIdentifier, testMaterialIdentifier);
+
+	float objects = 10;
+	for (size_t i = 0; i < objects; i++) 
+	{ 
+		Object& newObject = holder->GetHeldObject(holder->AddNewObject(holder));
+		newObject.AddMesh(testMeshIdentifier, testMaterialIdentifier);
+	}
+
+	int i = 0;
+	for (std::pair<const std::string, Object>& object : holder->heldObjects)
+	{
+		object.second.transform->SetLocalPosition(glm::vec3(0.0, i, 0.0));
+		object.second.transform->SetLocalScale(glm::vec3(1.0, 1.0, 1.0));
+
+		i++;
+	}
+
+	/* Framebuffers */
+
+	//// Shadow mapping
+	//glGenFramebuffers(1, &depthMapFBO);
+
+	//const glm::uvec2 SHADOW_SIZE = glm::uvec2(1024, 1024);
+	//unsigned int depthMap;
+	//glGenTextures(1, &depthMap);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_SIZE.x, SHADOW_SIZE.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	//glDrawBuffer(GL_NONE);
+	//glReadBuffer(GL_NONE);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-float lastTime = 0.0f, frameUpdate = 2000, frame = 0;
+double lastTime = 0.0f, frameUpdate = 60, frame = 0;
 void Application::Update() 
 { 
 	ProcessInput();
@@ -137,21 +174,74 @@ void Application::Update()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	camera->Update();
 
-	// Main Object
-	mainObject->renderer->shader->SetVec3("eyePos", camera->position);
+	//// Render the scene for shadow mapping
+	//const glm::uvec2 SHADOW_SIZE = glm::uvec2(1024, 1024);
+	//glViewport(0, 0, SHADOW_SIZE.x, SHADOW_SIZE.y);
+	//glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	//glClear(GL_DEPTH_BUFFER_BIT);
 
-	mainObject->renderer->shader->SetFloat("metallic", 0.5f);
-	mainObject->renderer->shader->SetFloat("roughness", 0.5f);
-	mainObject->renderer->shader->SetVec3("albedo", 1.0f, 1.0f, 1.0f);
-	mainObject->renderer->shader->SetFloat("ao", 1.0f);
+	//// Each material
+	//for (auto& materialRenderMaterial : holder->renderList)
+	//{
+	//	// Each mesh
+	//	for (auto& materialRenderMesh : materialRenderMaterial.second)
+	//	{
+	//		// Each transform and time the mesh is going to be rendered
+	//		for (int i = 0; i < materialRenderMesh.second.transforms.size(); i++)
+	//		{
 
-	mainObject->renderer->shader->SetMat3("normalMatrix", glm::transpose(glm::inverse(glm::mat3(glm::translate(glm::mat4(1.0f), mainObject->transform->GetPosition())))));
+	//		}
+	//	}
+	//}
 
-	mainObject->renderer->shader->SetVec3("lightPositions[0]", glm::vec3(1.0f, 2.0f, 1.0f));
-	mainObject->renderer->shader->SetVec3("lightColors[0]", glm::vec3(1.0f, 1.0f, 1.0f));
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	mainObject->renderer->Draw();
+	// Render each material and their associated mesh
+	for (auto& materialRenderMaterial : holder->renderList)
+	{
+		Material& currentMaterial = holder->heldMaterials.at(materialRenderMaterial.first);
 
+		currentMaterial.Bind();
+
+		// TODO : Make this a per-material function so any shader will work
+
+		// currentMaterial.SetPerMaterial(<params>)
+
+		currentMaterial.shader->SetVec3("eyePos", camera->position);
+		currentMaterial.shader->SetFloat("metallic", 0.5f);
+		currentMaterial.shader->SetFloat("roughness", 0.5f);
+		currentMaterial.shader->SetVec3("albedo", 1.0f, 0.0f, 0.0f);
+		currentMaterial.shader->SetFloat("ao", 1.0f);
+		currentMaterial.shader->SetVec3("lightPositions[0]", glm::vec3(1.0f, 2.0f, 1.0f));
+		currentMaterial.shader->SetVec3("lightColors[0]", glm::vec3(1.0f, 1.0f, 1.0f));
+
+		currentMaterial.shader->SetMat4("view", camera->View());
+		currentMaterial.shader->SetMat4("projection", camera->Projection());
+
+		for (auto& materialRenderMesh : materialRenderMaterial.second)
+		{
+			MeshRenderListElement meshRenderListElement = materialRenderMesh.second;
+
+			glBindVertexArray(meshRenderListElement.mesh->GetVAO());
+			int verticesCount = (int)meshRenderListElement.mesh->GetAmountOfVertices();
+
+
+			for (int i = 0; i < meshRenderListElement.transforms.size(); i++) 
+			{
+				currentMaterial.shader->SetMat3("normalMatrix", meshRenderListElement.transforms[i]->GetNormalMatrix());
+				currentMaterial.shader->SetMat4("model", meshRenderListElement.transforms[i]->GetModel());
+
+				// Draw
+				glDrawArrays(GL_TRIANGLES, 0, verticesCount);
+			}
+
+		}
+	}
+
+	// Unbind
+	glBindVertexArray(0);
+
+	// Glfw
 	glfwSwapBuffers(applicationWindow);
 	glfwPollEvents();
 

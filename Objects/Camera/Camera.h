@@ -1,7 +1,5 @@
 #pragma once
-#include "..\Object.h"
-
-#include "CameraControllers/BasicCameraMovement.h"
+#include "..\Objectoid.h"
 
 #include <glm/glm.hpp>
 
@@ -21,7 +19,6 @@ public:
 
 	glm::mat4 View(), Projection();
 
-	/*CameraController* cameraController;*/
 private:
 	GLFWwindow* window;
 };

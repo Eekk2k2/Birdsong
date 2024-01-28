@@ -18,7 +18,7 @@
     <ClInclude Include="main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Libraries\stb_image.h">
+    <ClInclude Include="libraries\Other\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Application.h">
@@ -33,7 +33,7 @@
     <ClInclude Include="Components\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\Object.h">
+    <ClInclude Include="Objects\Objectoid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\Transform.h">
@@ -45,43 +45,31 @@
     <ClInclude Include="Data\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\Camera\CameraController.h">
+    <ClInclude Include="Objects\Object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\Camera\CameraControllers\PivotCameraController.h">
+    <ClInclude Include=".away\Cubemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\MainObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects\Camera\CameraControllers\BasicCameraMovement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Data\Cubemap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\Procedural\Planet\PlanetMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\Extender.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Assets\Extenders\ExampleExtender.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Holder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Extra\Marching Cubes\CPU\MarchingCubesCPU.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\OpenSimplexNoise.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MarchingCubesGPU.h">
+    <ClInclude Include="libraries\Other\OpenSimplexNoise.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Data\Shader\ComputeShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Material\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physong\Collider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Holder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Extender.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Extenders\Application\RenderingE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -89,10 +77,10 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\glad.c">
+    <ClCompile Include="libraries\Other\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\stb_image.cpp">
+    <ClCompile Include="libraries\Other\stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
@@ -107,7 +95,7 @@
     <ClCompile Include="Components\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Object.cpp">
+    <ClCompile Include="Objects\Objectoid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\Transform.cpp">
@@ -119,43 +107,28 @@
     <ClCompile Include="Data\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Camera\CameraController.cpp">
+    <ClCompile Include="Objects\Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Camera\CameraControllers\PivotCameraController.cpp">
+    <ClCompile Include=".away\Cubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\MainObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Objects\Camera\CameraControllers\BasicCameraMovement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Data\Cubemap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\Procedural\Planet\PlanetMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\Extender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Assets\Extenders\ExampleExtender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Holder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Extra\Marching Cubes\CPU\MarchingCubesCPU.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\OpenSimplexNoise.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MarchingCubesGPU.cpp">
+    <ClCompile Include="libraries\Other\OpenSimplexNoise.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Data\Shader\ComputeShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Material\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Holder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Extender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Extenders\Application\RenderingE.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -166,14 +139,32 @@
     <Image Include="Assets\Textures\Normal.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Assets\Textures\Ao.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Metallic.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Roughness.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\lighting.vert" />
     <None Include="Assets\Shaders\lighting.frag" />
     <None Include="Assets\Shaders\default.frag" />
     <None Include="Assets\Shaders\default.vert" />
-    <None Include="Assets\Shaders\Compute\MarchingCubesMesh.comp" />
-    <None Include="Assets\Shaders\Compute\MarchingCubesNoise.comp" />
-    <None Include="Assets\Shaders\Compute\CubesMesh.comp" />
+    <None Include="Assets\Shaders\Compute\Procedural\Environment\MarchingCubesMesh.comp" />
+    <None Include="Assets\Shaders\Compute\Procedural\Environment\MarchingCubesNoise.comp" />
+    <None Include="Assets\Shaders\Compute\Procedural\Environment\CubesMesh.comp" />
+    <None Include="Assets\Shaders\Compute\Procedural\Environment\Flat\Heightmap_GPU.comp" />
+    <None Include="Tools\GridPointPositionCalculator.py" />
+    <None Include="Tools\GridIndicesCalculator.py" />
+    <None Include="README.md" />
+    <None Include=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Tools\OutputIndices.txt" />
+    <Text Include="Tools\OutputPointPosition.txt" />
   </ItemGroup>
 </Project>

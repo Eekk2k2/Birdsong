@@ -2,9 +2,10 @@
 #include "..\Data\Mesh\Mesh.h"
 #include "..\Data\Shader\Shader.h"
 #include "..\Data\Texture.h"
+#include "..\Data\Material\Material.h"
 #include "..\Objects\Camera\Camera.h"
 
-#include "..\Libraries\stb_image.h"
+#include "..\Libraries\Other\stb_image.h"
 
 #include <glad/glad.h>
 #define GLFW_INCLUDE_NONE
@@ -21,34 +22,26 @@
 class Renderer
 {
 public:
-	Renderer
-	(
+	Renderer(
 		std::shared_ptr<Camera> camera,
 		std::shared_ptr<Transform> transfrom,
-		std::shared_ptr<Mesh> mesh, 
-		std::shared_ptr<Shader> shader, 
-		std::vector<std::shared_ptr<Texture>> textures
+		std::shared_ptr<Mesh> mesh,
+		std::vector<std::shared_ptr<Material>> materials
 	);
 	~Renderer();
 
 	/// <summary>
-	/// The name will be the variable name in the shader
-	/// </summary>
-	/// <param name="texture"></param>
-	/// <param name="name"></param>
-	void AddTexture(std::shared_ptr<Texture> texture, std::string name);
-
-	/// <summary>
 	/// Call this to draw the renderer
 	/// </summary>
-	void Draw();
+	void Draw(Material& material) /*, Draw(unsigned int newCurrentMaterial)*/;
+
+	void AddMaterial(), AddMaterial(std::shared_ptr<Material> material);
 
 	std::shared_ptr<Camera> camera;
 	std::shared_ptr<Transform> transfrom;
 	std::shared_ptr<Mesh> mesh;
-	std::shared_ptr<Shader> shader;
 
-	std::vector<std::shared_ptr<Texture>> textures;
-	std::vector<std::string> textureNames;
+	unsigned int currentMaterial;
+	std::vector<std::shared_ptr<Material>> materials;
 };
 

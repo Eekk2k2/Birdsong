@@ -1,6 +1,6 @@
 #include "Texture.h"
 
-Texture::Texture(int WRAPPING, const char* filename, bool flipImage)
+Texture::Texture(int WRAPPING, const char* filename, bool flipImage, std::string name)
 {
     this->texture = 0;
 
@@ -47,15 +47,12 @@ Texture::Texture(int WRAPPING, const char* filename, bool flipImage)
         glTexImage2D(GL_TEXTURE_2D, 0, INTERNAL_FORMAT, width, height, 0, FORMAT, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
+    else { std::cout << "Failed to load texture" << std::endl; }
 
     // Finishes
 	stbi_image_free(data);
-	glBindTexture(GL_TEXTURE_2D, 0);
 	stbi_set_flip_vertically_on_load(false);
+    this->name = name;
 }
 
 Texture::~Texture() { glDeleteTextures(1, &texture); }

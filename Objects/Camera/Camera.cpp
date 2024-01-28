@@ -49,8 +49,8 @@ void Camera::Update()
 	if (glfwGetMouseButton(this->window, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
 		glfwSetCursorPos(this->window, 1920.0f / 2.0f, 1080.0f / 2);
 
-		this->yaw += deltaMousePosX * 0.1f;
-		this->pitch += deltaMousePosY * 0.1f;
+		this->yaw += (float)deltaMousePosX * 0.1f;
+		this->pitch += (float)deltaMousePosY * 0.1f;
 		if (this->pitch > 89.0f) pitch = 89.0f;
 		if (this->pitch < -89.0f) pitch = -89.0f;
 	}

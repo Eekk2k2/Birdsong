@@ -1,24 +1,24 @@
 #pragma once
-#include <vector>
-#include <memory>
-#include <string>
+#include "Objectoid.h"
+#include "..\Components\Renderer.h"
 
-#include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+#include "..\Data\Holder.h"
+class Holder;
+struct MeshRenderListElement;
+struct Identifier;
 
-#include "..\Components\Extender.h"
-#include "..\Components\Transform.h"
-
-class Object
+class Object : public Objectoid
 {
 public:
-	Object();
+	Object(std::shared_ptr<Holder> holder),
+		Object(Object&& other) noexcept,
 	~Object();
 
-	std::shared_ptr<Transform> transform;
-	
-private:
+	void AddMesh(Identifier meshIdentifier, Identifier materialIdentifier);
+	void RemoveMesh(int index);
+	std::vector<Mesh*> meshes;
 
+private:
+	std::shared_ptr<Holder> holder;
 };
 
