@@ -7,7 +7,7 @@ Camera::Camera(GLFWwindow* window)
 	this->farPlane = 1000.0f;
 
 	this->deltaTime = 0.0f;
-	this->lastFrame = 0.0f;
+	this->lastFrame = glfwGetTime();
 
 	this->yaw = 0.0f;
 	this->pitch = 0.0f;

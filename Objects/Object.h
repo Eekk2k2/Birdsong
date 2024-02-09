@@ -2,7 +2,7 @@
 #include "Objectoid.h"
 #include "..\Components\Renderer.h"
 
-#include "..\Data\Holder.h"
+#include "..\Data\Holder\Holder.h"
 class Holder;
 struct MeshRenderListElement;
 struct Identifier;

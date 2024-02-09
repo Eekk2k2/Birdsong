@@ -2,7 +2,7 @@
 
 std::shared_ptr<Camera> camera;
 
-Identifier testMeshIdentifier;
+Identifier cubeMesh, groundPlaneMesh;
 unsigned int depthMapFBO;
 
 Application::Application() {
@@ -14,7 +14,7 @@ Application::Application() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	//glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	// Hides the command promt
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
@@ -42,7 +42,7 @@ Application::Application() {
 	}
 
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_MULTISAMPLE); 
+	glEnable(GL_MULTISAMPLE); 
 
 	holder = std::make_shared<Holder>();
 }
@@ -52,15 +52,8 @@ Application::~Application() { }
 
 void Application::Start() {
 
-	std::vector<double> planeVertices = {
-		//// positions            // normals				// texcoords
-		// 200.0f, -0.5f,  200.0f,  0.0f, 1.0f, 0.0f,		200.0f,  0.0f,
-		//-200.0f, -0.5f,  200.0f,  0.0f, 1.0f, 0.0f,		0.0f,  0.0f,
-		//-200.0f, -0.5f, -200.0f,  0.0f, 1.0f, 0.0f,		0.0f, 200.0f,
-
-		// 200.0f, -0.5f,  200.0f,  0.0f, 1.0f, 0.0f,		200.0f,  0.0f,
-		//-200.0f, -0.5f, -200.0f,  0.0f, 1.0f, 0.0f,		0.0f, 200.0f,
-		// 200.0f, -0.5f, -200.0f,  0.0f, 1.0f, 0.0f,		200.0f, 200.0f,
+	std::vector<double> cubeVertices = {
+		// positions            // normals				// texcoords
 
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		0.0f, 0.0f,
 		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		1.0f, 0.0f,
@@ -105,52 +98,74 @@ void Application::Start() {
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,		0.0f, 1.0f
 	};
 
+	std::vector<double> groundPlaneVertices = {
+		// Vertex 1
+		-20.5, -1.0, -20.5,   0.0, 1.0, 0.0,   0.0, 1.0,
+
+		// Vertex 2
+		 20.5, -1.0, -20.5,   0.0, 1.0, 0.0,   1.0, 1.0,
+
+		 // Vertex 3
+		  20.5, -1.0,  20.5,   0.0, 1.0, 0.0,   1.0, 0.0,
+
+		  // Vertex 4
+		  -20.5, -1.0, -20.5,   0.0, 1.0, 0.0,   0.0, 1.0,
+
+		  // Vertex 5
+		   20.5, -1.0,  20.5,   0.0, 1.0, 0.0,   1.0, 0.0,
+
+		   // Vertex 6
+		   -20.5, -1.0,  20.5,   0.0, 1.0, 0.0,   0.0, 0.0
+	};
+
 	/* Create materials */
 
-	Identifier testMaterialIdentifier = holder->AddNewMaterial();
-	Material& testMaterial = holder->GetHeldMaterial(testMaterialIdentifier);
-	testMaterial.shader->Set(SHADER_FROMPATH, ".\\Assets\\Shaders\\default.vert", ".\\Assets\\Shaders\\default.frag");
-	testMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Area4096.png", false, ""), "albedoMap");
-	testMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Normal.png", false, ""), "normalMap");
-	testMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Metallic.png", false, ""), "metallicMap");
-	testMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Roughness.png", false, ""), "roughnessMap");
-	testMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Ao.png", false, ""), "aoMap");
+	Identifier defaultMaterialIdentifier = holder->AddNewMaterial<Material>();
+	Material& defaultMaterial = holder->GetHeldMaterial(defaultMaterialIdentifier);
+	defaultMaterial.shader->Set(SHADER_FROMPATH, ".\\Assets\\Shaders\\default.vert", ".\\Assets\\Shaders\\default.frag");
+	defaultMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Area4096.png", false, ""), "albedoMap");
+	defaultMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Normal.png", false, ""), "normalMap");
+	defaultMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Metallic.png", false, ""), "metallicMap");
+	defaultMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Roughness.png", false, ""), "roughnessMap");
+	defaultMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Ao.png", false, ""), "aoMap");
 
 	/* Create meshes */
 
-	testMeshIdentifier = holder->AddNewMesh(planeVertices);
+	cubeMesh = holder->AddNewMesh(cubeVertices);
+	groundPlaneMesh = holder->AddNewMesh(groundPlaneVertices);
 
-	/* Create objects */
+	/* TODO : Create objects */
 
 	camera = std::make_shared<Camera>(applicationWindow);
 
-	Object& groundFloor = holder->GetHeldObject(holder->AddNewObject(holder));
-	groundFloor.AddMesh(testMeshIdentifier, testMaterialIdentifier);
+	Object& groundPlane = holder->GetHeldObject(holder->AddNewObject(holder));
+	groundPlane.AddMesh(groundPlaneMesh, defaultMaterialIdentifier);
 
-	float objects = 10;
-	for (size_t i = 0; i < objects; i++) 
-	{ 
-		Object& newObject = holder->GetHeldObject(holder->AddNewObject(holder));
-		newObject.AddMesh(testMeshIdentifier, testMaterialIdentifier);
-	}
+	//float objects = 1;
+	//for (size_t i = 0; i < objects; i++) 
+	//{ 
+	//	Object& newObject = holder->GetHeldObject(holder->AddNewObject(holder));
+	//	newObject.AddMesh(cubeMesh, defaultMaterialIdentifier);
+	//}
 
-	int i = 0;
-	for (std::pair<const std::string, Object>& object : holder->heldObjects)
-	{
-		object.second.transform->SetLocalPosition(glm::vec3(0.0, i, 0.0));
-		object.second.transform->SetLocalScale(glm::vec3(1.0, 1.0, 1.0));
+	//int i = 0;
+	//for (std::pair<const std::string, Object>& object : holder->heldObjects)
+	//{
+	//	object.second.transform->SetLocalPosition(glm::vec3(0.0, i, 0.0));
+	//	object.second.transform->SetLocalScale(glm::vec3(1.0, 1.0, 1.0));
 
-		i++;
-	}
+	//	i++;
+	//}
 
 	/* Framebuffers */
 
-	//// Shadow mapping
+	// Shadow mapping
 	//glGenFramebuffers(1, &depthMapFBO);
 
 	//const glm::uvec2 SHADOW_SIZE = glm::uvec2(1024, 1024);
 	//unsigned int depthMap;
 	//glGenTextures(1, &depthMap);
+	//glBindTexture(GL_TEXTURE_2D, depthMap);
 	//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_SIZE.x, SHADOW_SIZE.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -169,77 +184,87 @@ void Application::Update()
 { 
 	ProcessInput();
 
-	//glClearColor(.4375f, .80078125f, .97265625f, 1.0f);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	camera->Update();
 
-	//// Render the scene for shadow mapping
+	holder->renderPipelineHandler->mainRenderPipeline->Render();
+
+	// Render the scene for shadow mapping
 	//const glm::uvec2 SHADOW_SIZE = glm::uvec2(1024, 1024);
 	//glViewport(0, 0, SHADOW_SIZE.x, SHADOW_SIZE.y);
 	//glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	//glClear(GL_DEPTH_BUFFER_BIT);
 
+	//float near_plane = 1.0f, far_plane = 7.5f;
+	//glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+	//glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	//glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+
 	//// Each material
-	//for (auto& materialRenderMaterial : holder->renderList)
+	//for (auto& materialRenderMaterial : holder->renderPipeline_OLD)
 	//{
 	//	// Each mesh
 	//	for (auto& materialRenderMesh : materialRenderMaterial.second)
 	//	{
+	//		glBindVertexArray(materialRenderMesh.second.mesh->GetVAO());
+	//		int verticesCount = (int)materialRenderMesh.second.mesh->GetAmountOfVertices();
+
 	//		// Each transform and time the mesh is going to be rendered
 	//		for (int i = 0; i < materialRenderMesh.second.transforms.size(); i++)
 	//		{
-
+	//			glDrawArrays(GL_TRIANGLES, 0, verticesCount);
 	//		}
 	//	}
 	//}
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// Render each material and their associated mesh
-	for (auto& materialRenderMaterial : holder->renderList)
-	{
-		Material& currentMaterial = holder->heldMaterials.at(materialRenderMaterial.first);
+	//glViewport(0, 0, 1920, 1080);
+	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		currentMaterial.Bind();
+	//// Render each material and their associated mesh
+	//for (auto& materialRenderMaterial : holder->renderPipeline_OLD)
+	//{
+	//	Material& currentMaterial = holder->heldMaterials.at(materialRenderMaterial.first);
 
-		// TODO : Make this a per-material function so any shader will work
+	//	currentMaterial.Bind();
 
-		// currentMaterial.SetPerMaterial(<params>)
+	//	// TODO : Make this a per-material function so any shader will work
+	//	// currentMaterial.SetPerMaterial(<params>)
 
-		currentMaterial.shader->SetVec3("eyePos", camera->position);
-		currentMaterial.shader->SetFloat("metallic", 0.5f);
-		currentMaterial.shader->SetFloat("roughness", 0.5f);
-		currentMaterial.shader->SetVec3("albedo", 1.0f, 0.0f, 0.0f);
-		currentMaterial.shader->SetFloat("ao", 1.0f);
-		currentMaterial.shader->SetVec3("lightPositions[0]", glm::vec3(1.0f, 2.0f, 1.0f));
-		currentMaterial.shader->SetVec3("lightColors[0]", glm::vec3(1.0f, 1.0f, 1.0f));
+	//	currentMaterial.shader->SetVec3("eyePos", camera->position);
+	//	currentMaterial.shader->SetFloat("metallic", 0.5f);
+	//	currentMaterial.shader->SetFloat("roughness", 0.5f);
+	//	currentMaterial.shader->SetVec3("albedo", 1.0f, 0.0f, 0.0f);
+	//	currentMaterial.shader->SetFloat("ao", 1.0f);
+	//	currentMaterial.shader->SetVec3("lightPositions[0]", glm::vec3(1.0f, 2.0f, 1.0f));
+	//	currentMaterial.shader->SetVec3("lightColors[0]", glm::vec3(1.0f, 1.0f, 1.0f));
 
-		currentMaterial.shader->SetMat4("view", camera->View());
-		currentMaterial.shader->SetMat4("projection", camera->Projection());
+	//	currentMaterial.shader->SetMat4("view", camera->View());
+	//	currentMaterial.shader->SetMat4("projection", camera->Projection());
 
-		for (auto& materialRenderMesh : materialRenderMaterial.second)
-		{
-			MeshRenderListElement meshRenderListElement = materialRenderMesh.second;
+	//	for (auto& materialRenderMesh : materialRenderMaterial.second)
+	//	{
+	//		MeshRenderListElement meshRenderListElement = materialRenderMesh.second;
 
-			glBindVertexArray(meshRenderListElement.mesh->GetVAO());
-			int verticesCount = (int)meshRenderListElement.mesh->GetAmountOfVertices();
+	//		glBindVertexArray(meshRenderListElement.mesh->GetVAO());
+	//		int verticesCount = (int)meshRenderListElement.mesh->GetAmountOfVertices();
 
 
-			for (int i = 0; i < meshRenderListElement.transforms.size(); i++) 
-			{
-				currentMaterial.shader->SetMat3("normalMatrix", meshRenderListElement.transforms[i]->GetNormalMatrix());
-				currentMaterial.shader->SetMat4("model", meshRenderListElement.transforms[i]->GetModel());
+	//		for (int i = 0; i < meshRenderListElement.transforms.size(); i++) 
+	//		{
+	//			currentMaterial.shader->SetMat3("normalMatrix", meshRenderListElement.transforms[i]->GetNormalMatrix());
+	//			currentMaterial.shader->SetMat4("model", meshRenderListElement.transforms[i]->GetModel());
 
-				// Draw
-				glDrawArrays(GL_TRIANGLES, 0, verticesCount);
-			}
+	//			// Draw
+	//			glDrawArrays(GL_TRIANGLES, 0, verticesCount);
+	//		}
 
-		}
-	}
+	//	}
+	//}
 
-	// Unbind
-	glBindVertexArray(0);
+	//// Unbind
+	//glBindVertexArray(0);
 
 	// Glfw
 	glfwSwapBuffers(applicationWindow);

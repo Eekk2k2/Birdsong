@@ -63,13 +63,40 @@
     <ClInclude Include="Physong\Collider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Data\Holder.h">
+    <ClInclude Include="Data\Holder\Holder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Data\Extender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Extenders\Application\RenderingE.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Materials\CustomMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelineHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Holder\RenderPipeline\RenderPipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include=".away\DefaultRenderPipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelines\MainRenderPipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Holder\RenderPipeline\DefinedBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelineElements.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Holder\Identifier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Holder\Mimic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -122,13 +149,34 @@
     <ClCompile Include="Data\Material\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Data\Holder.cpp">
+    <ClCompile Include="Data\Holder\Holder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Data\Extender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Extenders\Application\RenderingE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Materials\CustomMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Holder\RenderPipeline\RenderPipelineHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Holder\RenderPipeline\RenderPipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include=".away\DefaultRenderPipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Holder\RenderPipeline\RenderPipelines\MainRenderPipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Holder\RenderPipeline\DefinedBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Holder\Mimic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

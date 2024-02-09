@@ -30,6 +30,8 @@ public:
 	void AddUniform(std::string uniform), AddUniform(std::string uniform, int index);
 
 	// TODO : RemoveUniform()
+
+	virtual void PerMaterial(), PerMesh();
 	
 	std::shared_ptr<Shader> shader;
 private:

@@ -48,4 +48,14 @@ void Material::AddUniform(std::string uniform, int index)
 	this->uniformNames.insert(this->uniformNames.begin(), uniform);
 }
 
+void Material::PerMaterial()
+{
+
+}
+
+void Material::PerMesh()
+{
+
+}
+
 

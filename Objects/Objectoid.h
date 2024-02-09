@@ -7,7 +7,6 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-//#include "..\Components\Extender.h"
 #include "..\Components\Transform.h"
 
 class Objectoid

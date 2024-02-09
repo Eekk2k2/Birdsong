@@ -44,11 +44,7 @@ Mesh::Mesh(Mesh&& other) noexcept
 
 Mesh::~Mesh() 
 {
-	std::cout << "Deleting mesh" << std::endl;
 	if (deleteBuffersOnDestroy == true) {
-		
-		std::cout << "Deleting buffers" << std::endl;
-
 		// Deletes buffers
 		glDeleteVertexArrays(1, &this->VAO);
 		glDeleteBuffers(1, &this->VBO);

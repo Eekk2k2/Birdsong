@@ -19,39 +19,34 @@
 #pragma once
 
 #include <unordered_map>
-#include <typeindex>
-#include <any>
 #include <string>
 #include <random>
 #include <sstream>
 
-#include "..\Objects\Object.h"
+
+#include "../Objects/Object.h"
+#include "../Components/Transform.h"
+#include "../Data/Mesh/Mesh.h"
+#include "Identifier.h"
+
+#include "RenderPipeline/RenderPipelineHandler.h"
+
+class RenderPipelineHandler;
 class Object;
-
-#include "..\Components\Transform.h"
-
-typedef struct Identifier {
-    std::string UUID = "";
-} Identifier;
-
-typedef struct MeshRenderListElement {
-public:
-    Mesh* mesh;
-    std::vector<Transform*> transforms;
-} MeshRenderListElement;
-
-// For better clarity
-typedef std::string MaterialUUID, ObjectUUID, MeshUUID;
 
 class Holder
 {
 public:
-    // TODO : Make implementing frustum and lod easier
+    Holder() 
+    {
+        this->renderPipelineHandler = std::make_shared<RenderPipelineHandler>(this);
+    }
+
     std::unordered_map<std::string, Object>     heldObjects;
     std::unordered_map<std::string, Material>   heldMaterials;
     std::unordered_map<std::string, Mesh>       heldMeshes;
 
-    std::unordered_map<MaterialUUID, std::unordered_map<MeshUUID, MeshRenderListElement>> renderList;
+    std::shared_ptr<RenderPipelineHandler> renderPipelineHandler;
 
     template <typename... Args> Identifier AddNewObject(Args&&... args) {
         Identifier newIdentifier = GenerateIdentifier();
@@ -59,12 +54,12 @@ public:
         return newIdentifier;
     }
 
-    template <typename... Args> Identifier AddNewMaterial(Args&&... args) {
+    template <typename T, typename... Args> Identifier AddNewMaterial(Args&&... args) {
+        static_assert(std::is_base_of<Material, T>::value || std::is_same<Material, T>::value, 
+            "T in AddNewMaterial must be or be derived from Material");
+        
         Identifier newIdentifier = GenerateIdentifier();
         heldMaterials.emplace(newIdentifier.UUID, Material(std::forward<Args>(args)...));
-        
-        // Create new list for meshes associated with this material
-        renderList[newIdentifier.UUID] = std::unordered_map<MeshUUID, MeshRenderListElement>();
 
         return newIdentifier;
     }
@@ -83,3 +78,15 @@ public:
     Identifier  GenerateIdentifier();
     std::string GenerateUUID();
 };
+
+
+//struct MeshRenderListElement {
+//public:
+//    Mesh* mesh;
+//    std::vector<Transform*> transforms;
+//};
+
+// For better clarity
+//typedef std::string MaterialUUID, ObjectUUID, MeshUUID;
+
+//std::unordered_map<MaterialUUID, std::unordered_map<MeshUUID, MeshRenderListElement>> renderPipeline_OLD;

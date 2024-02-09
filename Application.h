@@ -11,13 +11,10 @@
 #include "Objects/Camera/Camera.h"
 #include "Objects/Object.h"
 
-#include "Data/Holder.h"
+#include "Data/Holder/Holder.h"
 #include "Data/Mesh/Mesh.h"
 #include "Data/Shader/Shader.h"
 #include "Data/Shader/ComputeShader.h"
-
-#include "Components/Renderer.h"
-
 
 class Application
 {
