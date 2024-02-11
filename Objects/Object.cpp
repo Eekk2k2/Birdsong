@@ -17,6 +17,7 @@ Object::~Object()
 void Object::AddMesh(Identifier meshIdentifier, Identifier materialIdentifier) 
 {
 	this->meshes.push_back(&this->holder->GetHeldMesh(meshIdentifier));
+	this->holder->renderPipelineHandler->mainRenderPipeline->EnrollMesh(meshIdentifier, this->transform, materialIdentifier);
 
 	//// The list of meshes for the material
 	//std::unordered_map<std::string, MeshRenderListElement>& materialRenderList = this->holder->renderPipeline_OLD.at(materialIdentifier.UUID);

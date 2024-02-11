@@ -27,7 +27,6 @@
     <ClInclude Include="Materials\CustomMaterial.h" />
     <ClInclude Include="Data\Holder\Holder.h" />
     <ClInclude Include="Data\Extender.h" />
-    <ClInclude Include="Data\Holder\Mimic.h" />
     <ClInclude Include="Physong\Collider.h" />
     <ClInclude Include="Data\Shader\ComputeShader.h" />
     <ClInclude Include=".away\Cubemap.h" />
@@ -59,7 +58,6 @@
     <ClCompile Include="Data\Material\Material.cpp" />
     <ClCompile Include="Data\Holder\Holder.cpp" />
     <ClCompile Include="Data\Extender.cpp" />
-    <ClCompile Include="Data\Holder\Mimic.cpp" />
     <ClCompile Include="Objects\Object.cpp" />
     <ClCompile Include="Objects\Camera\Camera.cpp" />
     <ClCompile Include="libraries\Other\glad.c" />

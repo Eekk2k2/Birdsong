@@ -11,5 +11,6 @@ class MainRenderPipeline : public RenderPipeline
 public:
     MainRenderPipeline(Holder* holder);
 
+    void Setup(std::shared_ptr<Camera> camera) override;
     void Render() override;
 };

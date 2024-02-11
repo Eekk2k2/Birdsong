@@ -129,6 +129,8 @@ void Application::Start() {
 	defaultMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Roughness.png", false, ""), "roughnessMap");
 	defaultMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Ao.png", false, ""), "aoMap");
 
+	holder->renderPipelineHandler->mainRenderPipeline->EnrollMaterial(defaultMaterialIdentifier);
+
 	/* Create meshes */
 
 	cubeMesh = holder->AddNewMesh(cubeVertices);
@@ -137,25 +139,25 @@ void Application::Start() {
 	/* TODO : Create objects */
 
 	camera = std::make_shared<Camera>(applicationWindow);
-
+	
 	Object& groundPlane = holder->GetHeldObject(holder->AddNewObject(holder));
 	groundPlane.AddMesh(groundPlaneMesh, defaultMaterialIdentifier);
 
-	//float objects = 1;
-	//for (size_t i = 0; i < objects; i++) 
-	//{ 
-	//	Object& newObject = holder->GetHeldObject(holder->AddNewObject(holder));
-	//	newObject.AddMesh(cubeMesh, defaultMaterialIdentifier);
-	//}
+	float objects = 20000;
+	for (size_t i = 0; i < objects; i++) 
+	{ 
+		Object& newObject = holder->GetHeldObject(holder->AddNewObject(holder));
+		newObject.AddMesh(cubeMesh, defaultMaterialIdentifier);
+	}
 
-	//int i = 0;
-	//for (std::pair<const std::string, Object>& object : holder->heldObjects)
-	//{
-	//	object.second.transform->SetLocalPosition(glm::vec3(0.0, i, 0.0));
-	//	object.second.transform->SetLocalScale(glm::vec3(1.0, 1.0, 1.0));
+	int i = 0;
+	for (std::pair<const std::string, Object>& object : holder->heldObjects)
+	{
+		object.second.transform->SetLocalPosition(glm::vec3(0.0, i, 0.0));
+		object.second.transform->SetLocalScale(glm::vec3(1.0, 1.0, 1.0));
 
-	//	i++;
-	//}
+		i++;
+	}
 
 	/* Framebuffers */
 
@@ -177,6 +179,8 @@ void Application::Start() {
 	//glDrawBuffer(GL_NONE);
 	//glReadBuffer(GL_NONE);
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	holder->renderPipelineHandler->mainRenderPipeline->Setup(camera);
 }
 
 double lastTime = 0.0f, frameUpdate = 60, frame = 0;

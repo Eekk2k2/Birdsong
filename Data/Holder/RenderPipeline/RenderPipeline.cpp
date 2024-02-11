@@ -13,7 +13,7 @@ void RenderPipeline::EnrollMaterial(Identifier materialIdentifier)
 {
 	Material* material = &this->holder->GetHeldMaterial(materialIdentifier);
 
-	this->renderPipelineList.at(materialIdentifier.UUID) = RenderPipelineMaterialElement(materialIdentifier, material);
+	this->renderPipelineList.emplace(materialIdentifier.UUID, RenderPipelineMaterialElement(materialIdentifier, material));
 }
 
 // TODO
@@ -21,7 +21,7 @@ void RenderPipeline::DisenrollMaterial()
 {
 }
 
-void RenderPipeline::EnrollMesh(Identifier meshIdentifier, Transform* transform, Identifier materialIdentifier)
+void RenderPipeline::EnrollMesh(Identifier meshIdentifier, std::shared_ptr<Transform> transform, Identifier materialIdentifier)
 {
 	// If the material doesnt exist in the renderlist we return
 	if (this->renderPipelineList.find(materialIdentifier.UUID) == renderPipelineList.end()) 
@@ -48,7 +48,14 @@ void RenderPipeline::DisenrollMesh()
 {
 }
 
+void RenderPipeline::Setup(std::shared_ptr<Camera> camera)
+{
+	std::cout << "Setup() function on base RenderPipeline called. This is wrong and shouldnt happen. No setting up will occur.";
+}
+
 void RenderPipeline::Render()
 {
 	std::cout << "Render() function on base RenderPipeline called. This is wrong and shouldnt happen. No rendering will occur.";
 }
+
+

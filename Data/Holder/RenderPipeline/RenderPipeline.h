@@ -9,6 +9,8 @@
 //#include "..\Data\Holder\Holder.h"
 class Holder;
 
+#include "../Objects/Camera/Camera.h"
+
 #include "..\Data\Mesh\Mesh.h"
 class Mesh;
 
@@ -36,10 +38,13 @@ public:
 	/// <summary>
 	/// Adding or removing a mesh from a pass/material
 	/// </summary>
-	void EnrollMesh(Identifier meshIdentifier, Transform* transform, Identifier materialIdentifier), DisenrollMesh();
+	void EnrollMesh(Identifier meshIdentifier, std::shared_ptr<Transform> transform, Identifier materialIdentifier), DisenrollMesh();
+
+	virtual void Setup(std::shared_ptr<Camera> camera);
 
 	virtual void Render();
-private:
+
 	Holder* holder;
+	std::shared_ptr<Camera> camera;
 };
 

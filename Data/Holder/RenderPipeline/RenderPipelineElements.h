@@ -35,7 +35,7 @@ typedef struct RenderPipelineMeshElement {
 	Identifier				meshIdentifier	= Identifier();
 
 	// Transforms for the mesh
-	std::vector<Transform*> transforms; 
+	std::vector<std::shared_ptr<Transform>> transforms; 
 
 } RenderPipelineMeshElement;
 #endif // !RENDERPIPELINEMESHELEMENT_S

@@ -37,10 +37,9 @@ class Object;
 class Holder
 {
 public:
-    Holder() 
-    {
-        this->renderPipelineHandler = std::make_shared<RenderPipelineHandler>(this);
-    }
+    Holder() { this->renderPipelineHandler = std::make_shared<RenderPipelineHandler>(this); }
+
+    // TODO : camera
 
     std::unordered_map<std::string, Object>     heldObjects;
     std::unordered_map<std::string, Material>   heldMaterials;
