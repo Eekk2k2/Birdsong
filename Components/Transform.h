@@ -7,6 +7,10 @@
 
 #include <iostream>
 #include <vector>
+#include <unordered_map>
+#include <string>
+#include <random>
+#include <sstream>
 
 class Transform {
 public:
@@ -16,6 +20,8 @@ public:
 	void SetParent(Transform* newParent);
 	Transform* GetParent();
 
+	void AddChild(std::string UUID, Transform* child), RemoveChild(std::string UUID);
+
 	void SetPosition(glm::vec3 position), SetLocalPosition(glm::vec3 localPosition);
 	glm::vec3 GetPosition(), GetLocalPosition();
 
@@ -24,12 +30,23 @@ public:
 
 	glm::mat4 GetModel();
 	glm::mat3 GetNormalMatrix();
+
+	// Flags
+	void FlagRecalculate();
 private:
+	std::string UUID;
+	std::string GenerateUUID(); // Merge with holder
+
 	Transform* parent;
-	std::vector<std::shared_ptr<Transform>> children;
+	std::unordered_map<std::string, Transform*> children;
 
 	// This is the  relative to the parents global
 	glm::vec3 localPosition, localScale;
+
+	// If no value is updated dont recalculate the model
+	bool recalculate = true;
+	glm::mat4 model;
+	glm::mat3 normalMatrix;
 };
 
 //#pragma once

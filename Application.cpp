@@ -186,7 +186,7 @@ void Application::Update()
 
 	Object& object1 = holder->GetHeldObject(object1Identifier);
 	//object1.transform->SetPosition(glm::vec3(glm::sin(glfwGetTime()) * -3.4512, 1.0f, 0.0f));
-	object1.transform->SetScale(glm::vec3((glm::sin(glfwGetTime()) + 1) * 0.5f, 1.0f, 1.0f));
+	object1.transform->SetScale(glm::vec3((glm::sin(glfwGetTime()) + 1) * 0.5f + 1.0f, 1.0f, 1.0f));
 
 	// Render using the main renderpipeline
 	holder->renderPipelineHandler->mainRenderPipeline->Render();
