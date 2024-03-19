@@ -38,6 +38,11 @@ void Material::AddTexture(std::shared_ptr<Texture> texture, std::string uniformN
 	this->uniformNames.push_back(uniformName);
 }
 
+int Material::GetTexturesCount()
+{
+	return this->textures.size();
+}
+
 void Material::AddUniform(std::string uniform)
 {
 	this->uniformNames.push_back(uniform);

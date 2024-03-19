@@ -23,7 +23,7 @@
     <ClInclude Include=".away\DefaultRenderPipeline.h" />
     <ClInclude Include="Data\Holder\Identifier.h" />
     <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelines\MainRenderPipeline.h" />
-    <ClInclude Include="Data\Holder\RenderPipeline\DefinedBase.h" />
+    <ClInclude Include="Objects\Lights\Light.h" />
     <ClInclude Include="Materials\CustomMaterial.h" />
     <ClInclude Include="Data\Holder\Holder.h" />
     <ClInclude Include="Data\Extender.h" />
@@ -51,7 +51,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include=".away\DefaultRenderPipeline.cpp" />
     <ClCompile Include="Data\Holder\RenderPipeline\RenderPipelines\MainRenderPipeline.cpp" />
-    <ClCompile Include="Data\Holder\RenderPipeline\DefinedBase.cpp" />
+    <ClCompile Include="Objects\Lights\Light.cpp" />
     <ClCompile Include="Materials\CustomMaterial.cpp" />
     <ClCompile Include="Data\Shader\ComputeShader.cpp" />
     <ClCompile Include=".away\Cubemap.cpp" />
@@ -89,6 +89,8 @@
     <None Include="Assets\Shaders\Compute\Procedural\Environment\Flat\Heightmap_GPU.comp" />
     <None Include="Assets\Shaders\default.frag" />
     <None Include="Assets\Shaders\default.vert" />
+    <None Include="Assets\Shaders\defaultDepth.frag" />
+    <None Include="Assets\Shaders\defaultDepth.vert" />
     <None Include="Assets\Shaders\lighting.frag" />
     <None Include="Assets\Shaders\lighting.vert" />
     <None Include="README.md" />

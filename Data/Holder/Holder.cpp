@@ -10,6 +10,11 @@ Material&   Holder::GetHeldMaterial (Identifier materialIdentifier)
     return heldMaterials            .at(materialIdentifier  .UUID);
 }
 
+Light& Holder::GetHeldLight(Identifier lightIdentifier)
+{
+    return heldLights               .at(lightIdentifier     .UUID);
+}
+
 Mesh&       Holder::GetHeldMesh     (Identifier meshIdentifier)
 {
     return heldMeshes               .at(meshIdentifier      .UUID);

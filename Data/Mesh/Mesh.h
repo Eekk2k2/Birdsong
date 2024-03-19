@@ -18,14 +18,14 @@
 class Mesh
 {
 public:
-	Mesh(std::vector<double> vertexData),												
-		Mesh(std::vector<double> vertexData, std::vector<unsigned int> indices),
+	Mesh(std::vector<float> vertexData),
+		Mesh(std::vector<float> vertexData, std::vector<unsigned int> indices),
 		Mesh(),
 		Mesh(Mesh&& other) noexcept,
 		~Mesh();
 
-	void SetAllData(std::vector<double> data),									
-		SetAllData(std::vector<double> data, std::vector<unsigned int> indices);	
+	void SetAllData(std::vector<float> data),
+		SetAllData(std::vector<float> data, std::vector<unsigned int> indices);
 
 	void AddNewVertex(), AddNewVertex(glm::dvec3 position, glm::dvec3 normal, glm::dvec2 texcoord);
 
@@ -45,11 +45,11 @@ public:
 	size_t GetDataSize(), GetAmountOfVertices();
 	void SetAmountOfDatasets(unsigned int newDatasetAmount);
 
-	std::vector<double> GetData();
+	std::vector<float> GetData();
 	unsigned int GetVAO(), GetVBO(), GetEBO();
 
 private:
-	std::vector<double> data;
+	std::vector<float> data;
 	unsigned int VAO, VBO;
 
 	bool useEBO;
@@ -60,5 +60,5 @@ private:
 	void UpdateMesh(), UpdateMeshWithEBO(), UpdateMeshWithoutEBO();
 
 	// When moving we do not want to destory our buffers
-	bool deleteBuffersOnDestroy = true;
+	bool deleteOnDestroy = true;
 };

@@ -27,6 +27,8 @@ public:
 
 	// TODO : RemoveTexture()
 
+	int GetTexturesCount();
+
 	void AddUniform(std::string uniform), AddUniform(std::string uniform, int index);
 
 	// TODO : RemoveUniform()

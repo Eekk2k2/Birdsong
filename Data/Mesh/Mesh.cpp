@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-Mesh::Mesh(std::vector<double> _data)
+Mesh::Mesh(std::vector<float> _data)
 {
 	/* Generate buffers */
 
@@ -11,7 +11,7 @@ Mesh::Mesh(std::vector<double> _data)
 	SetAllData(_data);
 }
 
-Mesh::Mesh(std::vector<double> _data, std::vector<unsigned int> indices) 
+Mesh::Mesh(std::vector<float> _data, std::vector<unsigned int> indices) 
 {
 	/* Generate buffers */
 
@@ -25,7 +25,7 @@ Mesh::Mesh(std::vector<double> _data, std::vector<unsigned int> indices)
 Mesh::Mesh()
 {
 	// Populates this->vertexData from empty
-	this->data = std::vector<double>();
+	this->data = std::vector<float>();
 
 	/* Generate buffers */
 
@@ -39,20 +39,21 @@ Mesh::Mesh(Mesh&& other) noexcept
 		useEBO(std::move(other.useEBO)), EBO(std::move(other.EBO)), indices(std::move(other.indices)),
 			datasetSize(std::move(other.datasetSize))
 				{
-					other.deleteBuffersOnDestroy = false;
+					other.deleteOnDestroy = false;
 				}
 
 Mesh::~Mesh() 
 {
-	if (deleteBuffersOnDestroy == true) {
-		// Deletes buffers
-		glDeleteVertexArrays(1, &this->VAO);
-		glDeleteBuffers(1, &this->VBO);
-		glDeleteBuffers(1, &this->EBO);
-	}
+	if (!deleteOnDestroy) { return; }
+
+	// Deletes buffers
+	glDeleteVertexArrays(1, &this->VAO);
+	glDeleteBuffers(1, &this->VBO);
+	glDeleteBuffers(1, &this->EBO);
+	
 }
 
-void Mesh::SetAllData(std::vector<double> data)
+void Mesh::SetAllData(std::vector<float> data)
 {
 	this->data = data;
 	
@@ -60,7 +61,7 @@ void Mesh::SetAllData(std::vector<double> data)
 	this->UpdateMesh();
 }
 
-void Mesh::SetAllData(std::vector<double> data, std::vector<unsigned int> indices)
+void Mesh::SetAllData(std::vector<float> data, std::vector<unsigned int> indices)
 {
 	this->data = data;
 	this->indices = indices;
@@ -207,7 +208,7 @@ void Mesh::DeleteAllIndices()
 	UpdateMesh();
 }
 
-std::vector<double> Mesh::GetData()
+std::vector<float> Mesh::GetData()
 {
 	return this->data;
 }
@@ -239,7 +240,7 @@ void Mesh::UpdateMeshWithEBO()
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 
 	// Update or set the data in the vertex array buffer
-	glBufferData(GL_ARRAY_BUFFER, sizeof(double) * this->data.size(), this->data.data(), GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->data.size(), this->data.data(), GL_DYNAMIC_DRAW);
 
 	// Bind the EBO
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
@@ -251,11 +252,11 @@ void Mesh::UpdateMeshWithEBO()
 	datasetSize = 8;
 
 	glBindVertexArray(this->VAO);
-	glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, datasetSize * sizeof(double), (void*)0); // Vertex position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, datasetSize * sizeof(float), (void*)0); // Vertex position
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_DOUBLE, GL_FALSE, datasetSize * sizeof(double), (void*)(3 * sizeof(double))); // Normals
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, datasetSize * sizeof(float), (void*)(3 * sizeof(float))); // Normals
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 2, GL_DOUBLE, GL_FALSE, datasetSize * sizeof(double), (void*)(6 * sizeof(double))); // Tex
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, datasetSize * sizeof(float), (void*)(6 * sizeof(float))); // Tex
 	glEnableVertexAttribArray(2);
 
 	// Unbind the buffers
@@ -269,7 +270,7 @@ void Mesh::UpdateMeshWithoutEBO()
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 
 	// Generate a new buffer for the vertex data
-	glBufferData(GL_ARRAY_BUFFER, sizeof(double) * this->data.size(), this->data.data(), GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->data.size(), this->data.data(), GL_DYNAMIC_DRAW);
 
 	// Bind the EBO and clear it
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
@@ -279,11 +280,11 @@ void Mesh::UpdateMeshWithoutEBO()
 	datasetSize = 8;
 
 	glBindVertexArray(this->VAO);
-	glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, datasetSize * sizeof(double), (void*)0); // Vertex position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, datasetSize * sizeof(float), (void*)0); // Vertex position
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_DOUBLE, GL_FALSE, datasetSize * sizeof(double), (void*)(3 * sizeof(double))); // Normals
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, datasetSize * sizeof(float), (void*)(3 * sizeof(float))); // Normals
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 2, GL_DOUBLE, GL_FALSE, datasetSize * sizeof(double), (void*)(6 * sizeof(double))); // Tex
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, datasetSize * sizeof(float), (void*)(6 * sizeof(float))); // Tex
 	glEnableVertexAttribArray(2);
 
 	// Unbind the buffers

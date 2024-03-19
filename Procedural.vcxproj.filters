@@ -87,13 +87,13 @@
     <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelines\MainRenderPipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Data\Holder\RenderPipeline\DefinedBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelineElements.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Data\Holder\Identifier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Lights\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -170,7 +170,7 @@
     <ClCompile Include="Data\Holder\RenderPipeline\RenderPipelines\MainRenderPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Data\Holder\RenderPipeline\DefinedBase.cpp">
+    <ClCompile Include="Objects\Lights\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -204,6 +204,8 @@
     <None Include="Tools\GridIndicesCalculator.py" />
     <None Include="README.md" />
     <None Include=".gitignore" />
+    <None Include="Assets\Shaders\defaultDepth.frag" />
+    <None Include="Assets\Shaders\defaultDepth.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Tools\OutputIndices.txt" />

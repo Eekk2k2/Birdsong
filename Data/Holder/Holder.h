@@ -27,12 +27,14 @@
 #include "../Objects/Object.h"
 #include "../Components/Transform.h"
 #include "../Data/Mesh/Mesh.h"
+#include "..\Objects\Lights\Light.h"
 #include "Identifier.h"
 
 #include "RenderPipeline/RenderPipelineHandler.h"
 
 class RenderPipelineHandler;
 class Object;
+class Light;
 
 class Holder
 {
@@ -43,6 +45,7 @@ public:
 
     std::unordered_map<std::string, Object>     heldObjects;
     std::unordered_map<std::string, Material>   heldMaterials;
+    std::unordered_map<std::string, Light>      heldLights;
     std::unordered_map<std::string, Mesh>       heldMeshes;
 
     std::shared_ptr<RenderPipelineHandler> renderPipelineHandler;
@@ -55,11 +58,17 @@ public:
 
     template <typename T, typename... Args> Identifier AddNewMaterial(Args&&... args) {
         static_assert(std::is_base_of<Material, T>::value || std::is_same<Material, T>::value, 
-            "T in AddNewMaterial must be or be derived from Material");
+            "T in AddNewMaterial must be- or be derived from Material");
         
         Identifier newIdentifier = GenerateIdentifier();
         heldMaterials.emplace(newIdentifier.UUID, Material(std::forward<Args>(args)...));
 
+        return newIdentifier;
+    }
+
+    template <typename ...Args> Identifier AddNewLight(Args&&... args) {
+        Identifier newIdentifier = GenerateIdentifier();
+        heldLights.emplace(newIdentifier.UUID, Light(std::forward<Args>(args)...));
         return newIdentifier;
     }
 
@@ -72,7 +81,13 @@ public:
 
     Object&     GetHeldObject   (Identifier objectIdentifier    );
     Material&   GetHeldMaterial (Identifier materialIdentifier  );
+    Light&      GetHeldLight    (Identifier lightIdentifier     );
     Mesh&       GetHeldMesh     (Identifier meshIdentifier      );
+
+    //std::vector<Object*>    GetAllHeldObjects   ();
+    //std::vector<Material*>  GetAllHeldMaterials ();
+    //std::vector<Light*>     GetAllHeldLights    ();
+    //std::vector<Mesh*>      GetAllHeldMeshes    ();
 
     Identifier  GenerateIdentifier();
     std::string GenerateUUID();

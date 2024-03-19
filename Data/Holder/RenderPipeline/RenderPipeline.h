@@ -20,7 +20,11 @@ class Material;
 #include "..\Components\Transform.h"
 class Transform;
 
+#include "..\Objects\Lights\Light.h"
+class Light;
+
 #include "RenderPipelineElements.h"
+
 
 class RenderPipeline
 {
@@ -28,6 +32,7 @@ public:
 	RenderPipeline(Holder* holder);
 	~RenderPipeline();
 
+	std::unordered_map<std::string, Light*> renderPipelineLights;
 	std::unordered_map<std::string, RenderPipelineMaterialElement> renderPipelineList;
 
 	/// <summary>
@@ -39,6 +44,12 @@ public:
 	/// Adding or removing a mesh from a pass/material
 	/// </summary>
 	void EnrollMesh(Identifier meshIdentifier, std::shared_ptr<Transform> transform, Identifier materialIdentifier), DisenrollMesh();
+
+	/// <summary>
+	/// Adding or removing a light
+	/// </summary>
+	/// <param name="lightIdentifier"></param>
+	void EnrollLight(Identifier lightIdentifier), DisenrollLight();
 
 	virtual void Setup(std::shared_ptr<Camera> camera);
 

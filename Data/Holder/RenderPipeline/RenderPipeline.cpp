@@ -21,6 +21,17 @@ void RenderPipeline::DisenrollMaterial()
 {
 }
 
+void RenderPipeline::EnrollLight(Identifier lightIdentifier)
+{
+	Light* light = &this->holder->GetHeldLight(lightIdentifier);
+	this->renderPipelineLights.emplace(lightIdentifier.UUID, light);
+}
+
+// TODO
+void RenderPipeline::DisenrollLight()
+{
+}
+
 void RenderPipeline::EnrollMesh(Identifier meshIdentifier, std::shared_ptr<Transform> transform, Identifier materialIdentifier)
 {
 	// If the material doesnt exist in the renderlist we return
