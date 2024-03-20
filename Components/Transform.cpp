@@ -1,222 +1,26 @@
-//#include "Transform.h"
-//
-///*															Transform															*/
-//
-//
-//Transform::Transform() 
-//{
-//	this->position			= glm::vec3(0.0, 0.0, 0.0);
-//	this->lastPosition		= glm::vec3(-1.0, 0.0, -1.0);
-//	this->localPosition		= glm::vec3(0.0, 0.0, 0.0);
-//	this->lastLocalPosition = glm::vec3(-1.0, -1.0, -1.0);
-//
-//	this->scale				= glm::vec3(1.0, 1.0, 1.0);
-//	this->lastScale			= glm::vec3(-1.0, -1.0, -1.0);
-//	this->localScale		= glm::vec3(1.0, 1.0, 1.0);
-//	this->lastLocalScale	= glm::vec3(-1.0, 1.0, -1.0);
-//
-//	this->model = GetModel();
-//
-//	updatedSinceLastFrame	= false;
-//	this->normalMatrix		= GetNormalMatrix();
-//}
-//
-//Transform::Transform(std::shared_ptr<Transform> parentTransform)
-//{ 
-//	this->position			= glm::vec3(0.0, 0.0, 0.0);
-//	this->lastPosition		= glm::vec3(0.0, 0.0, 0.0);
-//	this->localPosition		= glm::vec3(0.0, 0.0, 0.0);
-//	this->lastLocalPosition = glm::vec3(0.0, 0.0, 0.0);
-//
-//	//this->scale				= glm::vec3(1.0, 1.0, 1.0);
-//	//this->lastScale			= glm::vec3(1.0, 1.0, 1.0);
-//	//this->localScale		= glm::vec3(1.0, 1.0, 1.0);
-//	//this->lastLocalScale	= glm::vec3(1.0, 1.0, 1.0);
-//
-//	this->model = GetModel();
-//
-//	updatedSinceLastFrame	= false;
-//	this->normalMatrix		= GetNormalMatrix();
-//
-//	SetParent(parentTransform);
-//}
-//
-//Transform::~Transform() 
-//{
-//	// I dont really know how to handle what happens with the children. I guess I delete them too, but i feel like that should happen on the MainObject side of things?
-//}
-//
-//void Transform::SetParent(std::shared_ptr<Transform> parentTransform)
-//{
-//	this->parentTransform = parentTransform;
-//	this->parentTransform->AddChild(this);
-//
-//	// Since we now have a new parent.position to be relative 
-//	// to we need to recalculate our global position. This would 
-//	// also recalculate every child's global position due to the 
-//	// same reason. 
-//	RecalculatePosition();
-//}
-//
-//void Transform::AddChild(Transform* childTransform) 
-//{
-//	this->childTransforms.push_back(childTransform);
-//}
-//
-//glm::mat4 Transform::GetModel() 
-//{
-//	// If no values are updated we use the old matrix
-//	
-//	if (this->position == this->lastPosition || this->localPosition == this->lastLocalPosition || this->scale == this->lastScale || this->localScale == this->lastLocalScale)  
-//	{
-//		updatedSinceLastFrame = false; 
-//		return this->model;
-//	}
-//	else {
-//		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), this->scale);
-//		this->model = glm::translate(glm::mat4(1.0f), this->position) * scaleMatrix;
-//
-//		this->lastPosition		= this->position;
-//		this->lastLocalPosition = this->localPosition;
-//		this->lastScale			= this->scale;
-//		this->lastLocalScale	= this->localScale;
-//
-//		updatedSinceLastFrame	= true;
-//		return this->model;
-//	}
-//}
-//
-///*															Position															*/
-//
-//void Transform::RecalculatePosition()
-//{
-//	if (this->parentTransform != nullptr)
-//		this->position = this->parentTransform->GetPosition() + this->localPosition;
-//	else { this->position = this->localPosition; }
-//
-//	// Since our global position has changed we need to recalculate each childs 
-//	// global position too. This is because their global position is relative 
-//	// to this transforms position + their local position.
-//	RecalculateChildrensPosition();
-//}
-//
-//void Transform::RecalculateLocalPosition()
-//{
-//	if (this->parentTransform != nullptr)
-//		this->localPosition = this->position - this->parentTransform->GetPosition();
-//	else this->localPosition = this->position;
-//
-//	// Since our local position and in return global position has changed we need 
-//	// to recalculate each childs global position too. This is because their global
-//	// position is relative to this transforms position + their local position.
-//	RecalculateChildrensPosition();
-//}
-//
-//void Transform::RecalculateChildrensPosition() 
-//{
-//	for (size_t i = 0; i < this->childTransforms.size(); i++)
-//		this->childTransforms[i]->RecalculatePosition();
-//}
-//
-//void Transform::RecalculateChildrensLocalPosition() 
-//{
-//	for (size_t i = 0; i < this->childTransforms.size(); i++)
-//		this->childTransforms[i]->RecalculateChildrensLocalPosition();
-//}
-//
-//void Transform::SetPosition(glm::vec3 newPosition)
-//{
-//	this->position = newPosition;
-//
-//	RecalculateLocalPosition();
-//	RecalculateChildrensPosition();
-//}
-//
-//void Transform::SetLocalPosition(glm::vec3 newLocalPosition)
-//{
-//	this->localPosition = newLocalPosition;
-//
-//	RecalculatePosition();
-//}
-//
-//glm::vec3 Transform::GetPosition() 
-//{
-//	return this->position;
-//}
-//
-//glm::vec3 Transform::GetLocalPosition() 
-//{
-//	return this->localPosition;
-//}
-//
-///*															Scale															*/
-//
-//void Transform::RecalculateScale() 
-//{
-//	if (this->parentTransform != nullptr)
-//		this->scale = this->localScale * this->parentTransform->scale;
-//	else this->scale = this->localScale;
-//
-//	RecalculateChildrensScale();
-//}
-//
-//void Transform::RecalculateLocalScale() 
-//{
-//	if (this->parentTransform != nullptr)
-//		this->localScale = this->scale / this->parentTransform->scale;
-//	else this->localScale = this->scale;
-//}
-//
-//void Transform::RecalculateChildrensScale() 
-//{
-//	for (size_t i = 0; i < this->childTransforms.size(); i++)
-//		this->childTransforms[i]->RecalculateScale();
-//}
-//
-//void Transform::RecalculateChildrensLocalScale() 
-//{
-//	for (size_t i = 0; i < this->childTransforms.size(); i++)
-//		this->childTransforms[i]->RecalculateChildrensLocalScale();
-//}
-//
-//glm::mat3 Transform::GetNormalMatrix()
-//{
-//	this->normalMatrix = glm::transpose(glm::inverse(glm::mat3(glm::translate(glm::mat4(1.0f), this->GetPosition()))));
-//	return this->normalMatrix;
-//}
-//
-//void Transform::SetScale(glm::vec3 newScale)
-//{
-//	this->scale = newScale;
-//
-//	RecalculateLocalScale();
-//	RecalculateChildrensScale();
-//}
-//
-//void Transform::SetLocalScale(glm::vec3 newLocalScale)
-//{
-//	this->localScale = newLocalScale;
-//
-//	RecalculateScale();
-//}
-
 #include "Transform.h"
 
-Transform::Transform() 
+Transform::Transform()
 {
+	this->parent = nullptr;
+
 	SetLocalPosition(glm::vec3(0.0, 0.0, 0.0));
 	SetLocalScale	(glm::vec3(1.0, 1.0, 1.0));
+	SetLocalRotation(glm::quat(1.0, 0.0, 0.0, 0.0));
 	this->UUID = GenerateUUID();
-
-	this->parent = nullptr;
 }
 
 Transform::Transform(Transform&& other) noexcept : children(std::move(other.children))
 {
 	this->localPosition = other.localPosition;
+	this->localRotation = other.localRotation;
 	this->localScale = other.localScale;
 	this->parent = other.parent;
 	this->UUID = other.UUID;
+	this->model = other.model;
+	this->normalMatrix = other.model;
+	this->recalculateModel = other.recalculateModel;
+	this->recalculateNormalMatrix = other.recalculateNormalMatrix;
 }
 
 
@@ -225,13 +29,13 @@ Transform::Transform(Transform&& other) noexcept : children(std::move(other.chil
 void Transform::SetParent(Transform* newParent)
 {
 	/* We also need to update localVariables as the globalVariables are
-	   not relative to the origin/old parent anymore, but the parent.	*/ 
+	   not relative to the origin/old parent anymore, but the parent.	*/
 
-	FlagRecalculate();
+	FlagRecalculateModel();
 
 	// First we store the transform data relative to the origin, aka the global verison
-	glm::vec3 globalPosition	= this->GetPosition();
-	glm::vec3 globalScale		= this->GetScale();
+	glm::vec3 globalPosition = this->GetPosition();
+	glm::vec3 globalScale = this->GetScale();
 
 	// Update the child-parent relationships
 	if (this->parent != nullptr) { this->parent->RemoveChild(this->UUID); }
@@ -239,8 +43,8 @@ void Transform::SetParent(Transform* newParent)
 	newParent->AddChild(this->UUID, this);
 
 	// Set the position with a new parent, something which will calculate the new localPosition
-	this->SetPosition	(globalPosition);
-	this->SetScale		(globalScale);
+	this->SetPosition(globalPosition);
+	this->SetScale(globalScale);
 }
 
 Transform* Transform::GetParent()
@@ -263,22 +67,22 @@ void Transform::RemoveChild(std::string UUID)
 
 void Transform::SetPosition(glm::vec3 position)
 {
-	FlagRecalculate();
+	FlagRecalculateModel();
 
-	if (parent != nullptr)	{ this->localPosition = position - this->parent->GetPosition(); }
-	else					{ this->localPosition = position; }
+	if (parent != nullptr) { this->localPosition = position - this->parent->GetPosition(); }
+	else { this->localPosition = position; }
 }
 
 void Transform::SetLocalPosition(glm::vec3 localPosition)
 {
-	FlagRecalculate();
+	FlagRecalculateModel();
 
 	this->localPosition = localPosition;
 }
 
 glm::vec3 Transform::GetPosition()
 {
-	if (this->parent != nullptr) { return (this->localPosition * this->GetScale()) + this->parent->GetPosition(); }
+	if (this->parent != nullptr) { return (glm::rotate(this->parent->GetRotation(), this->localPosition) * this->GetScale()) + this->parent->GetPosition(); }
 	else { return this->localPosition; }
 }
 
@@ -291,23 +95,50 @@ glm::vec3 Transform::GetLocalPosition()
 
 
 
-// If Slocal * Sparent = Sglobal will Sglobal / Sparent give Slocal
-void Transform::SetScale(glm::vec3 scale) 
+void Transform::SetRotation(glm::quat rotation)
 {
-	FlagRecalculate();
+	FlagRecalculateModel();
 
-	if (this->parent != nullptr) { this->localScale = this->GetScale() / this->parent->GetScale(); }
+	if (this->parent != nullptr) { this->localRotation = rotation * glm::inverse(this->parent->GetRotation()); }
+	else { this->localRotation = rotation; }
+}
+
+void Transform::SetLocalRotation(glm::quat localRotation)
+{
+	this->localRotation = localRotation;
+}
+
+glm::quat Transform::GetRotation()
+{
+	if (this->parent != nullptr) { return this->localRotation * this->parent->GetRotation(); }
+	else { return this->localRotation; }
+}
+
+glm::quat Transform::GetLocalRotation()
+{
+	return this->localRotation;
+}
+
+
+
+
+// If Slocal * Sparent = Sglobal will Sglobal / Sparent give Slocal
+void Transform::SetScale(glm::vec3 scale)
+{
+	FlagRecalculateModel();
+
+	if (this->parent != nullptr) { this->localScale = scale / this->parent->GetScale(); }
 	else { this->localScale = scale; }
 }
 
-void Transform::SetLocalScale(glm::vec3 localScale) 
+void Transform::SetLocalScale(glm::vec3 localScale)
 {
-	FlagRecalculate();
+	FlagRecalculateModel();
 
 	this->localScale = localScale;
 }
 
-glm::vec3 Transform::GetScale() 
+glm::vec3 Transform::GetScale()
 {
 	if (this->parent != nullptr) { return this->localScale * this->parent->GetScale(); }
 	else { return this->localScale; }
@@ -324,26 +155,42 @@ glm::vec3 Transform::GetLocalScale()
 // TODO : Optimize so the model only gets calculated if any value has changed(includes any of the parent values)
 glm::mat4 Transform::GetModel()
 {
-	bool recalculateModel = (this->parent != nullptr ? (this->recalculate || this->parent->recalculate) : this->recalculate);
-	if (recalculateModel)
-		{ this->model = glm::translate(glm::mat4(1.0f), this->GetPosition()) * glm::scale(glm::mat4(1.0f), this->GetScale()); recalculate = false; }
+	if (recalculateModel) {
+		glm::mat4 rotation		= glm::mat4_cast(this->GetRotation());
+		glm::mat4 scale			= glm::scale(glm::mat4(1.0f), this->GetScale());
+		glm::mat4 translation	= glm::translate(glm::mat4(1.0f), this->GetPosition());
 
+		this->model = translation * scale * rotation;
+
+		FlagRecalculateNormalMatrix();
+		recalculateModel = false;
+	}
 	return this->model;
 }
 
 glm::mat3 Transform::GetNormalMatrix()
 {
-	return glm::transpose(glm::inverse(glm::mat3(this->GetModel())));
+	if (recalculateNormalMatrix) {
+		this->normalMatrix = glm::transpose(glm::inverse(glm::mat3(this->GetModel())));
+		recalculateNormalMatrix = false;
+	}
+	return this->normalMatrix;
 }
 
-void Transform::FlagRecalculate()
+void Transform::FlagRecalculateModel()
 {
-	// Flag to recalculate the model on next GetModel() because we updated 
+	// Flag to recalculateModel the model on next GetModel() because we updated 
 	// some values and the model doesnt represent them anymore.
-	this->recalculate = true;
+	this->recalculateModel = true;
 
 	// Every child also needs updating, which is very annoying as i had to implement children logic just for this
-	for (auto& child : this->children) { this->children.at(child.first)->FlagRecalculate(); }
+	for (auto& child : this->children) { this->children.at(child.first)->FlagRecalculateModel(); }
+}
+
+void Transform::FlagRecalculateNormalMatrix()
+{
+	this->recalculateNormalMatrix = true;
+	for (auto& child : this->children) { this->children.at(child.first)->FlagRecalculateNormalMatrix(); }
 }
 
 std::string Transform::GenerateUUID()

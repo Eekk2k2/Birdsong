@@ -153,14 +153,14 @@ void Application::Start() {
 	Object& object1 = holder->GetHeldObject(object1Identifier);
 	object1.AddMesh(cubeMesh, defaultMaterialIdentifier);
 	object1.transform->SetPosition(glm::vec3(0.0, 2.0, 0.0));
-	object1.transform->SetScale(glm::vec3(1.0, 1.0, 1.0));
+	object1.transform->SetRotation(glm::quat(cos(glm::radians(45.0 * 0.5)), sin(glm::radians(45.0 * 0.5)), 0.0, 0.0));
 
 	object1ChildIdentifier = holder->AddNewObject(holder);
 	Object& object1child = holder->GetHeldObject(object1ChildIdentifier);
 	object1child.AddMesh(cubeMesh, defaultMaterialIdentifier);
 	object1child.transform->SetParent(object1.transform.get());
 	object1child.transform->SetPosition(glm::vec3(2.0, 4.0, 0.0));
-	object1child.transform->SetLocalScale(glm::vec3(1.0, 1.0, 1.0));
+	object1child.transform->SetLocalRotation(glm::quat(cos(glm::radians(45.0 * 0.5)), sin(glm::radians(45.0 * 0.5)), 0.0, 0.0));
 
 	//float objects = 5000;
 	//for (size_t i = 0; i < objects; i++) 
@@ -186,8 +186,10 @@ void Application::Update()
 
 	Object& object1 = holder->GetHeldObject(object1Identifier);
 	//object1.transform->SetPosition(glm::vec3(glm::sin(glfwGetTime()) * -3.4512, 1.0f, 0.0f));
-	object1.transform->SetScale(glm::vec3((glm::sin(glfwGetTime()) + 1) * 0.5f + 1.0f, 1.0f, 1.0f));
-
+	//object1.transform->SetScale(glm::vec3((glm::sin(glfwGetTime()) + 1) * 0.5f + 1.0f, 1.0f, 1.0f));
+	/*object1.transform->SetRotation(glm::quat(cos(glm::radians(45.0 * 0.5)), sin(glm::radians(45.0 * 0.5)), 0.0, 0.0));*/
+	//object1.transform->SetRotation(glm::quat(0.853553, -0.146447, 0.353553, 0.353553));
+	
 	// Render using the main renderpipeline
 	holder->renderPipelineHandler->mainRenderPipeline->Render();
 
