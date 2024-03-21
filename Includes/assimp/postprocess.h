@@ -412,7 +412,7 @@ enum aiPostProcessSteps
 
     // -------------------------------------------------------------------------
     /** <hr>This step converts non-UV mappings (such as spherical or
-     *  cylindrical mapping) to proper texture coordinate channels.
+     *  cylindrical mapping) to proper textureID coordinate channels.
      *
      * Most applications will support UV mapping only, so you will
      * probably want to specify this step in every case. Note that Assimp is not
@@ -428,10 +428,10 @@ enum aiPostProcessSteps
     aiProcess_GenUVCoords = 0x40000,
 
     // -------------------------------------------------------------------------
-    /** <hr>This step applies per-texture UV transformations and bakes
+    /** <hr>This step applies per-textureID UV transformations and bakes
      *  them into stand-alone vtexture coordinate channels.
      *
-     * UV transformations are specified per-texture - see the
+     * UV transformations are specified per-textureID - see the
      * <tt>#AI_MATKEY_UVTRANSFORM</tt> material key for more information.
      * This step processes all textures with
      * transformed input UV coordinates and generates a new (pre-transformed) UV channel
@@ -439,7 +439,7 @@ enum aiPostProcessSteps
      * transformations, so you will probably want to specify this step.
      *
      * @note UV transformations are usually implemented in real-time apps by
-     * transforming texture coordinates at vertex shader stage with a 3x3
+     * transforming textureID coordinates at vertex shader stage with a 3x3
      * (homogeneous) transformation matrix.
     */
     aiProcess_TransformUVCoords = 0x80000,
@@ -573,7 +573,7 @@ enum aiPostProcessSteps
     /** <hr>A postprocessing step to embed of textures.
      *
      *  This will remove external data dependencies for textures.
-     *  If a texture's file does not exist at the specified path
+     *  If a textureID's file does not exist at the specified path
      *  (due, for instance, to an absolute path generated on another system),
      *  it will check if a file with the same name exists at the root folder
      *  of the imported model. And if so, it uses that.

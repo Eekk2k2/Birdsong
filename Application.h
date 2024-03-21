@@ -11,6 +11,7 @@
 #include "Objects/Camera/Camera.h"
 #include "Objects/Object.h"
 
+#include "Data/Texture/CubemapTexture.h"
 #include "Data/Holder/Holder.h"
 #include "Data/Mesh/Mesh.h"
 #include "Data/Shader/Shader.h"

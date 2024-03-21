@@ -3,6 +3,7 @@
 std::shared_ptr<Camera> camera;
 
 Identifier cubeMesh, groundPlaneMesh, newLightIdentifier, object1Identifier, object1ChildIdentifier;
+std::shared_ptr<CubemapTexture> cubemap;
 
 Application::Application() {
 	this->timeSinceMaximize = 0.0f;
@@ -118,16 +119,32 @@ void Application::Start() {
 		-90.5, -1.0,  90.5,   0.0, 1.0, 0.0,   0.0, 0.0
 	};
 
+	/* Create Cubemap */
+
+	std::vector<std::string> faces
+	{
+		".\\Assets\\Textures\\Cubemaps\\learnopengl\\right.jpg",
+		".\\Assets\\Textures\\Cubemaps\\learnopengl\\left.jpg",
+		".\\Assets\\Textures\\Cubemaps\\learnopengl\\top.jpg",
+		".\\Assets\\Textures\\Cubemaps\\learnopengl\\bottom.jpg",
+		".\\Assets\\Textures\\Cubemaps\\learnopengl\\front.jpg",
+		".\\Assets\\Textures\\Cubemaps\\learnopengl\\back.jpg" 
+	};
+
+	std::vector<bool> flips{ false, false, false, false, false, false };
+
+	cubemap = std::make_shared<CubemapTexture>(faces, flips);
+
 	/* Create materials */
 
 	Identifier defaultMaterialIdentifier = holder->AddNewMaterial<Material>();
 	Material& defaultMaterial = holder->GetHeldMaterial(defaultMaterialIdentifier);
 	defaultMaterial.shader->Set(SHADER_FROMPATH, ".\\Assets\\Shaders\\default.vert", ".\\Assets\\Shaders\\default.frag");
-	defaultMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Area4096.png", false, ""), "albedoMap");
-	defaultMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Normal.png", false, ""), "normalMap");
-	defaultMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Metallic.png", false, ""), "metallicMap");
-	defaultMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Roughness.png", false, ""), "roughnessMap");
-	defaultMaterial.AddTexture(std::make_shared<Texture>(GL_REPEAT, ".\\Assets\\Textures\\Ao.png", false, ""), "aoMap");
+	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Area4096.png", false	), "albedoMap");
+	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Normal.png", false		), "normalMap");
+	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Metallic.png", false	), "metallicMap");
+	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Roughness.png", false	), "roughnessMap");
+	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Ao.png", false			), "aoMap");
 
 	holder->renderPipelineHandler->mainRenderPipeline->EnrollMaterial(defaultMaterialIdentifier);
 
@@ -162,6 +179,8 @@ void Application::Start() {
 	object1child.transform->SetPosition(glm::vec3(2.0, 4.0, 0.0));
 	object1child.transform->SetLocalRotation(glm::quat(cos(glm::radians(45.0 * 0.5)), sin(glm::radians(45.0 * 0.5)), 0.0, 0.0));
 
+	holder->renderPipelineHandler->mainRenderPipeline->Setup(camera);
+
 	//float objects = 5000;
 	//for (size_t i = 0; i < objects; i++) 
 	//{ 
@@ -169,8 +188,6 @@ void Application::Start() {
 	//	newObject.AddMesh(cubeMesh, defaultMaterialIdentifier);
 	//	newObject.transform->SetLocalPosition(glm::vec3(0.0, i, 0.0));
 	//}
-
-	holder->renderPipelineHandler->mainRenderPipeline->Setup(camera);
 }
 
 double lastTime = 0.0f, frameUpdate = 60, frame = 0;
@@ -205,7 +222,9 @@ void Application::Update()
 	frame++;
 	if (frame == frameUpdate)
 	{
-		glfwSetWindowTitle(this->applicationWindow, std::to_string((int)(1.0f / deltaTime)).c_str()); frame = 0;
+		glfwSetWindowTitle(this->applicationWindow, std::to_string((int)(1.0f / deltaTime)).c_str()); 
+		
+		frame = 0;
 	}
 }
 

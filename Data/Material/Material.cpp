@@ -1,6 +1,6 @@
 #include "Material.h"
 
-Material::Material(std::shared_ptr<Shader> shader, std::vector<std::shared_ptr<Texture>> textures) 
+Material::Material(std::shared_ptr<Shader> shader, std::vector<std::shared_ptr<Texture2D>> textures) 
 {
 	this->shader = shader;
 	this->textures = textures;
@@ -9,7 +9,7 @@ Material::Material(std::shared_ptr<Shader> shader, std::vector<std::shared_ptr<T
 Material::Material() 
 {
 	this->shader = std::make_shared<Shader>();
-	this->textures = std::vector<std::shared_ptr<Texture>>{ };
+	this->textures = std::vector<std::shared_ptr<Texture2D>>{ };
 }
 
 Material::Material(Material&& other) noexcept 
@@ -28,13 +28,13 @@ void Material::Bind()
 	{
 		this->shader->SetInt(this->uniformNames[i], i);
 		glActiveTexture(GL_TEXTURE0 + i);
-		glBindTexture(GL_TEXTURE_2D, this->textures[i]->texture);
+		glBindTexture(GL_TEXTURE_2D, this->textures[i]->GetTextureID());
 	}
 }
 
-void Material::AddTexture(std::shared_ptr<Texture> texture, std::string uniformName)
+void Material::AddTexture(std::shared_ptr<Texture2D> textureID, std::string uniformName)
 {
-	this->textures.push_back(texture);
+	this->textures.push_back(textureID);
 	this->uniformNames.push_back(uniformName);
 }
 

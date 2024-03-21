@@ -42,7 +42,7 @@
     <ClInclude Include="Objects\Camera\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Data\Texture.h">
+    <ClInclude Include="Data\Texture\Texture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Objects\Object.h">
@@ -96,6 +96,9 @@
     <ClInclude Include="Objects\Lights\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Data\Texture\CubemapTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -128,7 +131,7 @@
     <ClCompile Include="Objects\Camera\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Data\Texture.cpp">
+    <ClCompile Include="Data\Texture\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Object.cpp">
@@ -173,6 +176,9 @@
     <ClCompile Include="Objects\Lights\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Data\Texture\CubemapTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Textures\Area4096.png">
@@ -188,6 +194,24 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Assets\Textures\Roughness.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Cubemaps\learnopengl\back.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Cubemaps\learnopengl\bottom.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Cubemaps\learnopengl\front.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Cubemaps\learnopengl\left.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Cubemaps\learnopengl\right.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Cubemaps\learnopengl\top.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

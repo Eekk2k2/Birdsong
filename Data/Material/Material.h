@@ -5,7 +5,7 @@
 
 #include <glad/glad.h>
 
-#include "..\Texture.h"
+#include "..\Texture\Texture2D.h"
 #include "..\Shader\Shader.h"
 
 typedef struct Uniform {
@@ -16,14 +16,14 @@ typedef struct Uniform {
 class Material
 {
 public:
-	Material(std::shared_ptr<Shader> shader, std::vector<std::shared_ptr<Texture>> textures),
+	Material(std::shared_ptr<Shader> shader, std::vector<std::shared_ptr<Texture2D>> textures),
 		Material(),
 		Material(Material&& other) noexcept;
 		~Material();
 
 	void Bind();
 
-	void AddTexture(std::shared_ptr<Texture> texture, std::string uniformName);
+	void AddTexture(std::shared_ptr<Texture2D> textureID, std::string uniformName);
 
 	// TODO : RemoveTexture()
 
@@ -38,7 +38,7 @@ public:
 	std::shared_ptr<Shader> shader;
 private:
 	
-	std::vector<std::shared_ptr<Texture>> textures;
+	std::vector<std::shared_ptr<Texture2D>> textures;
 	std::vector<std::string> uniformNames;
 };
 

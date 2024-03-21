@@ -1,7 +1,7 @@
 #pragma once
 #include "..\Data\Mesh\Mesh.h"
 #include "..\Data\Shader\Shader.h"
-#include "..\Data\Texture.h"
+#include "..\Data\Texture\Texture2D.h"
 #include "..\Data\Material\Material.h"
 #include "..\Objects\Camera\Camera.h"
 

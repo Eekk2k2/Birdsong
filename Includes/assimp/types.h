@@ -498,7 +498,7 @@ struct aiMemoryInfo {
 
 #endif
 
-    /** Storage allocated for texture data */
+    /** Storage allocated for textureID data */
     unsigned int textures;
 
     /** Storage allocated for material data  */

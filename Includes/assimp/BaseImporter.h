@@ -217,7 +217,7 @@ protected:
      *   generic default material. Note that default materials *should*
      *   be named AI_DEFAULT_MATERIAL_NAME if they're just color-shaded
      *   or AI_DEFAULT_TEXTURED_MATERIAL_NAME if they define a (dummy)
-     *   texture. </li>
+     *   textureID. </li>
      * </ul>
      * If the AI_SCENE_FLAGS_INCOMPLETE-Flag is <b>not</b> set:<ul>
      * <li> at least one mesh must be there</li>
