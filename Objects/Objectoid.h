@@ -1,21 +1,13 @@
 #pragma once
-#include <vector>
-#include <memory>
-#include <string>
-
-#include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-
 #include "..\Components\Transform.h"
 
-class Objectoid
+class Objectoid : public Transform
 {
 public:
 	Objectoid();
+	Objectoid(Objectoid&& other) noexcept;
+	Objectoid(const Objectoid& other);
 	~Objectoid();
-
-	std::shared_ptr<Transform> transform;
 private:
 	
 };

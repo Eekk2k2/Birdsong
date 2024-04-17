@@ -23,6 +23,20 @@ Transform::Transform(Transform&& other) noexcept : children(std::move(other.chil
 	this->recalculateNormalMatrix = other.recalculateNormalMatrix;
 }
 
+Transform::Transform(const Transform& other)
+{
+	this->children = other.children;
+	this->localPosition = other.localPosition;
+	this->localRotation = other.localRotation;
+	this->localScale = other.localScale;
+	this->parent = other.parent;
+	this->UUID = other.UUID;
+	this->model = other.model;
+	this->normalMatrix = other.model;
+	this->recalculateModel = other.recalculateModel;
+	this->recalculateNormalMatrix = other.recalculateNormalMatrix;
+}
+
 
 
 

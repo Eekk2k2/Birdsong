@@ -22,6 +22,7 @@ public:
 		Mesh(std::vector<float> vertexData, std::vector<unsigned int> indices),
 		Mesh(),
 		Mesh(Mesh&& other) noexcept,
+		Mesh(const Mesh& other),
 		~Mesh();
 
 	void SetAllData(std::vector<float> data),

@@ -16,8 +16,10 @@
 typedef int SHADER_FROM;
 #endif
 
+#include <vector>
 #include <glad/glad.h> // include glad to get all the required OpenGL headers
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <string>
 #include <fstream>
@@ -31,35 +33,57 @@ public:
 	Shader(SHADER_FROM from, const char* vertex, const char* fragment);
 	~Shader();
 
-	unsigned int shaderProgramId;
-
 	void Use();
 
-	void Set(SHADER_FROM from, const char* vertex, const char* fragment);
+	/// <summary>
+	/// "Updates"(creates a new shader program) so this shader has all the newly 
+	/// set shaders.
+	/// </summary>
+	void LinkProgram();
+
+	/// <summary>
+	/// Call LinkProgram() to finalize changes. These functions just sets the 
+	/// shaders without creating a program from them.
+	/// </summary>
+	void Set(SHADER_FROM from, const char* vertex, const char* fragment), 
+		SetVert(SHADER_FROM from, const char* shader), 
+		SetFrag(SHADER_FROM from, const char* shader), 
+		SetGeom(SHADER_FROM from, const char* shader);
 
 	void SetBool(const std::string& name, bool value) const;
 
-	void SetInt(const std::string& name, int value) const;
+	void SetInt(const std::string& name, int value) const,
+		SetInt(const std::string& name, std::vector<int> values) const;
 
-	void SetFloat(const std::string& name, float value) const;
+	void SetFloat(const std::string& name, float value) const,
+		SetFloat(const std::string& name, std::vector<float> values) const;
 
-	void SetVec2(const std::string& name, const glm::vec2& value) const;
+	void SetVec2(const std::string& name, const glm::vec2& value) const,
+		SetVec2(const std::string& name, const std::vector<glm::vec2>& values) const;
 
-	void SetVec2(const std::string& name, float x, float y) const;
+	void SetVec2(const std::string& name, float x, float y) const,
+		SetVec2(const std::string& name, std::vector<float[2]> values) const;
 
-	void SetVec3(const std::string& name, const glm::vec3& value) const;
+	void SetVec3(const std::string& name, const glm::vec3& value) const,
+		SetVec3(const std::string& name, const std::vector<glm::vec3>& values) const;
 
-	void SetVec3(const std::string& name, float x, float y, float z) const;
+	void SetVec3(const std::string& name, float x, float y, float z) const,
+		SetVec3(const std::string& name, std::vector<float[3]> values) const;
 
-	void SetVec4(const std::string& name, const glm::vec4& value) const;
+	void SetVec4(const std::string& name, const glm::vec4& value) const,
+		SetVec4(const std::string& name, const std::vector<glm::vec4>& values) const;
 
-	void SetVec4(const std::string& name, float x, float y, float z, float w) const;
+	void SetVec4(const std::string& name, float x, float y, float z, float w) const,
+		SetVec4(const std::string& name, std::vector<float[4]> values) const;
 
-	void SetMat2(const std::string& name, const glm::mat2& mat) const;
+	void SetMat2(const std::string& name, const glm::mat2& mat) const, 
+		SetMat2(const std::string& name, const std::vector<glm::mat2>& mats) const;
 
-	void SetMat3(const std::string& name, const glm::mat3& mat) const;
+	void SetMat3(const std::string& name, const glm::mat3& mat) const, 
+		SetMat3(const std::string& name, const std::vector<glm::mat3>& mats) const;
 
-	void SetMat4(const std::string& name, const glm::mat4& mat) const;
+	void SetMat4(const std::string& name, const glm::mat4& mat) const,
+		SetMat4(const std::string& name, const std::vector<glm::mat4>& mats) const;
 
 private:
 	const char* vertexShaderCodeError = R"(
@@ -87,14 +111,19 @@ private:
 		}
 		)";
 
-	unsigned int CreateVertexShader(const char* vertexShaderCode);
-	unsigned int CreateFragmentShader(const char* fragmetnShaderCode);
+	
+	std::string LoadShaderCode(const char* path);
+
+	unsigned int CreateVertexShader(const char* shaderCode),
+		CreateFragmentShader(const char* shaderCode), 
+		CreateGeometryShader(const char* shaderCode);
 
 	int CreateShaderProgram(unsigned int vertexShader, unsigned int fragmentShader);
 
 	void CreateShaderFromPath(const char* vertexPath, const char* fragmentPath);
-
 	void CreateShaderFromCode(const char* vertexCode, const char* fragmentCode);
+
+	unsigned int fragmentShaderID, vertexShaderID, geometryShaderID, shaderProgramId;
 };
 
 #endif

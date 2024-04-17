@@ -19,88 +19,105 @@
 #pragma once
 
 #include <unordered_map>
+#include <typeindex>
+#include <vector>
+#include <memory>
 #include <string>
 #include <random>
+#include <any>
 #include <sstream>
 
+#include "..\Data\Core\Result.h"
+#include "..\Data\Core\Identifier.h"
 
-#include "../Objects/Object.h"
-#include "../Components/Transform.h"
-#include "../Data/Mesh/Mesh.h"
-#include "..\Objects\Lights\Light.h"
-#include "Identifier.h"
+#include ".\Held.h"
+using HeldT = std::any;
 
-#include "RenderPipeline/RenderPipelineHandler.h"
+#ifndef IsTemplateClassStruct
+#define IstemplateClassStruct
 
-class RenderPipelineHandler;
-class Object;
-class Light;
+template <typename T>
+struct IsTemplateClass : std::false_type { };
 
-class Holder
-{
+template <template<typename...> class C, typename... Args>
+struct IsTemplateClass<C<Args...>> : std::true_type { };
+
+#define STATIC_ASSERT_IS_TEMPLATE_CLASS(T) \
+    static_assert(!IsTemplateClass<T>::value, "T cannot be a template class");
+
+#endif // !IsTemplateClass
+
+class Holder {
 public:
-    Holder() { this->renderPipelineHandler = std::make_shared<RenderPipelineHandler>(this); }
+    Holder();
+    ~Holder();
 
-    // TODO : camera
+    template <typename T>
+    bool isTypeHeld() const;
 
-    std::unordered_map<std::string, Object>     heldObjects;
-    std::unordered_map<std::string, Material>   heldMaterials;
-    std::unordered_map<std::string, Light>      heldLights;
-    std::unordered_map<std::string, Mesh>       heldMeshes;
+    template <typename T>
+    BS_VOID AddHeldType();
 
-    std::shared_ptr<RenderPipelineHandler> renderPipelineHandler;
+    template <typename T, typename... Args>
+    Result<Identifier> AddNewItem(Args&&... args);
 
-    template <typename... Args> Identifier AddNewObject(Args&&... args) {
-        Identifier newIdentifier = GenerateIdentifier();
-        heldObjects.emplace(newIdentifier.UUID, Object(std::forward<Args>(args)...));
-        return newIdentifier;
-    }
+    template <typename T>
+    Result_Ptr<T> GetHeldItem(const Identifier& identifier) const; 
 
-    template <typename T, typename... Args> Identifier AddNewMaterial(Args&&... args) {
-        static_assert(std::is_base_of<Material, T>::value || std::is_same<Material, T>::value, 
-            "T in AddNewMaterial must be- or be derived from Material");
-        
-        Identifier newIdentifier = GenerateIdentifier();
-        heldMaterials.emplace(newIdentifier.UUID, Material(std::forward<Args>(args)...));
+    // Render Pipelines
+    // ...
 
-        return newIdentifier;
-    }
-
-    template <typename ...Args> Identifier AddNewLight(Args&&... args) {
-        Identifier newIdentifier = GenerateIdentifier();
-        heldLights.emplace(newIdentifier.UUID, Light(std::forward<Args>(args)...));
-        return newIdentifier;
-    }
-
-    template <typename... Args> Identifier AddNewMesh(Args&&... args) 
-    {
-        Identifier newIdentifier = GenerateIdentifier();
-        heldMeshes.emplace(newIdentifier.UUID, Mesh(std::forward<Args>(args)...));
-        return newIdentifier;
-    }
-
-    Object&     GetHeldObject   (Identifier objectIdentifier    );
-    Material&   GetHeldMaterial (Identifier materialIdentifier  );
-    Light&      GetHeldLight    (Identifier lightIdentifier     );
-    Mesh&       GetHeldMesh     (Identifier meshIdentifier      );
-
-    //std::vector<Object*>    GetAllHeldObjects   ();
-    //std::vector<Material*>  GetAllHeldMaterials ();
-    //std::vector<Light*>     GetAllHeldLights    ();
-    //std::vector<Mesh*>      GetAllHeldMeshes    ();
-
-    Identifier  GenerateIdentifier();
-    std::string GenerateUUID();
+private:
+    std::unordered_map<std::type_index, HeldT> heldTypes;
 };
 
+template<typename T>
+inline bool Holder::isTypeHeld() const
+{
+    STATIC_ASSERT_IS_TEMPLATE_CLASS(T);
+    return heldTypes.find(typeid(T)) != heldTypes.end();
+}
 
-//struct MeshRenderListElement {
-//public:
-//    Mesh* mesh;
-//    std::vector<Transform*> transforms;
-//};
 
-// For better clarity
-//typedef std::string MaterialUUID, ObjectUUID, MeshUUID;
+template<typename T>
+inline BS_VOID Holder::AddHeldType()
+{
+    // Checks
+    STATIC_ASSERT_IS_TEMPLATE_CLASS(T);
+    if (this->isTypeHeld<T>())
+        return BS_VOID(false, "Cannot add type T in AddHeldType<T>() because it already exists.");
 
-//std::unordered_map<MaterialUUID, std::unordered_map<MeshUUID, MeshRenderListElement>> renderPipeline_OLD;
+    // Adds
+    heldTypes.emplace(typeid(T), HeldType<T>());
+    return BS_VOID(nullptr);
+}
+
+template<typename T, typename ...Args>
+inline Result<Identifier> Holder::AddNewItem(Args&& ...args)
+{
+    // Checks
+    STATIC_ASSERT_IS_TEMPLATE_CLASS(T);
+    if (!this->isTypeHeld<T>())
+        return Result<Identifier>(false, "Cannot AddNewItem() of instance T due to type T not being held");
+
+    // Adds
+    HeldType<T>& heldType = std::any_cast<HeldType<T>&>(this->heldTypes.at(typeid(T)));
+    Result<Identifier> newItemIdentifier = heldType.EnrollNewItem(std::forward<Args>(args)...);
+
+    return Result<Identifier>(newItemIdentifier);
+}
+
+
+template<typename T>
+inline Result_Ptr<T> Holder::GetHeldItem(const Identifier& identifier) const
+{
+    // Checks
+    STATIC_ASSERT_IS_TEMPLATE_CLASS(T);
+    if (!this->isTypeHeld<T>())
+        return Result_Ptr<T>(false, "Cannot GetHeldItem() T due to type T not being held");
+
+    // Retrieve
+    // TODO : Check if identifier acutally points to item T
+    HeldType<T>* heldType = std::any_cast<HeldType<T>*>(this->heldTypes.at(typeid(T)));
+    return heldType->RetrieveItemPointer(identifier);
+}

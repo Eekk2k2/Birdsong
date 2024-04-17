@@ -20,10 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include=".away\DefaultRenderPipeline.h" />
+    <ClInclude Include="Data\Core\Result.h" />
     <ClInclude Include="Data\Texture\CubemapTexture.h" />
-    <ClInclude Include="Data\Holder\Identifier.h" />
+    <ClInclude Include="Data\Core\Identifier.h" />
     <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelines\MainRenderPipeline.h" />
+    <ClInclude Include="Data\Holder\Held.h" />
+    <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelines\DefaultRenderPipeline.h" />
     <ClInclude Include="Objects\Lights\Light.h" />
     <ClInclude Include="Materials\CustomMaterial.h" />
     <ClInclude Include="Data\Holder\Holder.h" />
@@ -46,13 +48,15 @@
     <ClInclude Include="Extenders\Application\RenderingE.h" />
     <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelineHandler.h" />
     <ClInclude Include="Data\Holder\RenderPipeline\RenderPipeline.h" />
-    <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelineElements.h" />
+    <ClInclude Include="Data\Holder\RenderPipeline\PipelineElement.h" />
+    <ClInclude Include="Objects\Lights\PointLight.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include=".away\DefaultRenderPipeline.cpp" />
     <ClCompile Include="Data\Texture\CubemapTexture.cpp" />
     <ClCompile Include="Data\Holder\RenderPipeline\RenderPipelines\MainRenderPipeline.cpp" />
+    <ClCompile Include="Data\Holder\Held.cpp" />
+    <ClCompile Include="Data\Holder\RenderPipeline\RenderPipelines\DefaultRenderPipeline.cpp" />
     <ClCompile Include="Objects\Lights\Light.cpp" />
     <ClCompile Include="Materials\CustomMaterial.cpp" />
     <ClCompile Include="Data\Shader\ComputeShader.cpp" />
@@ -75,6 +79,7 @@
     <ClCompile Include="Extenders\Application\RenderingE.cpp" />
     <ClCompile Include="Data\Holder\RenderPipeline\RenderPipelineHandler.cpp" />
     <ClCompile Include="Data\Holder\RenderPipeline\RenderPipeline.cpp" />
+    <ClCompile Include="Objects\Lights\PointLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Textures\Ao.png" />
@@ -98,7 +103,11 @@
     <None Include="Assets\Shaders\default.frag" />
     <None Include="Assets\Shaders\default.vert" />
     <None Include="Assets\Shaders\defaultDepth.frag" />
+    <None Include="Assets\Shaders\defaultDepth.geom" />
     <None Include="Assets\Shaders\defaultDepth.vert" />
+    <None Include="Assets\Shaders\Depth\Point\PointDepth.frag" />
+    <None Include="Assets\Shaders\Depth\Point\PointDepth.geom" />
+    <None Include="Assets\Shaders\Depth\Point\PointDepth.vert" />
     <None Include="Assets\Shaders\lighting.frag" />
     <None Include="Assets\Shaders\lighting.vert" />
     <None Include="README.md" />

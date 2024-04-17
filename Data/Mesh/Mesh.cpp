@@ -42,6 +42,11 @@ Mesh::Mesh(Mesh&& other) noexcept
 					other.deleteOnDestroy = false;
 				}
 
+Mesh::Mesh(const Mesh& other) :data(other.data), VAO(other.VAO), VBO(other.VBO),
+	useEBO(other.useEBO), EBO(other.EBO), indices(other.indices),
+		datasetSize(other.datasetSize) {}
+
+
 Mesh::~Mesh() 
 {
 	if (!deleteOnDestroy) { return; }

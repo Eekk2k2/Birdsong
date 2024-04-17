@@ -81,22 +81,31 @@
     <ClInclude Include="Data\Holder\RenderPipeline\RenderPipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include=".away\DefaultRenderPipeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelines\MainRenderPipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelineElements.h">
+    <ClInclude Include="Data\Holder\RenderPipeline\PipelineElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Data\Holder\Identifier.h">
+    <ClInclude Include="Data\Core\Identifier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Objects\Lights\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Data\Texture\CubemapTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Lights\PointLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Core\Result.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Holder\Held.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Holder\RenderPipeline\RenderPipelines\DefaultRenderPipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -167,9 +176,6 @@
     <ClCompile Include="Data\Holder\RenderPipeline\RenderPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include=".away\DefaultRenderPipeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Data\Holder\RenderPipeline\RenderPipelines\MainRenderPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -177,6 +183,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Data\Texture\CubemapTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Lights\PointLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Holder\Held.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Holder\RenderPipeline\RenderPipelines\DefaultRenderPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -230,6 +245,10 @@
     <None Include=".gitignore" />
     <None Include="Assets\Shaders\defaultDepth.frag" />
     <None Include="Assets\Shaders\defaultDepth.vert" />
+    <None Include="Assets\Shaders\defaultDepth.geom" />
+    <None Include="Assets\Shaders\Depth\Point\PointDepth.frag" />
+    <None Include="Assets\Shaders\Depth\Point\PointDepth.geom" />
+    <None Include="Assets\Shaders\Depth\Point\PointDepth.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Tools\OutputIndices.txt" />

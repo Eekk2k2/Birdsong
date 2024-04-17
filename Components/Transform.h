@@ -15,7 +15,8 @@
 class Transform {
 public:
 	Transform(),
-		Transform(Transform&& other) noexcept;
+	Transform(Transform&& other) noexcept;
+	Transform(const Transform& other);
 
 	void SetParent(Transform* newParent);
 	Transform* GetParent();

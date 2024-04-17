@@ -2,8 +2,8 @@
 
 std::shared_ptr<Camera> camera;
 
-Identifier cubeMesh, groundPlaneMesh, newLightIdentifier, object1Identifier, object1ChildIdentifier;
-std::shared_ptr<CubemapTexture> cubemap;
+//BirdsongResult<Identifier> cubeMesh, groundPlaneMesh, newLightIdentifier, object1Identifier, object1ChildIdentifier;
+//std::shared_ptr<CubemapTexture> cubemap;
 
 Application::Application() {
 	this->timeSinceMaximize = 0.0f;
@@ -121,65 +121,76 @@ void Application::Start() {
 
 	/* Create Cubemap */
 
-	std::vector<std::string> faces
-	{
-		".\\Assets\\Textures\\Cubemaps\\learnopengl\\right.jpg",
-		".\\Assets\\Textures\\Cubemaps\\learnopengl\\left.jpg",
-		".\\Assets\\Textures\\Cubemaps\\learnopengl\\top.jpg",
-		".\\Assets\\Textures\\Cubemaps\\learnopengl\\bottom.jpg",
-		".\\Assets\\Textures\\Cubemaps\\learnopengl\\front.jpg",
-		".\\Assets\\Textures\\Cubemaps\\learnopengl\\back.jpg" 
-	};
+	//std::vector<std::string> faces
+	//{
+	//	".\\Assets\\Textures\\Cubemaps\\learnopengl\\right.jpg",
+	//	".\\Assets\\Textures\\Cubemaps\\learnopengl\\left.jpg",
+	//	".\\Assets\\Textures\\Cubemaps\\learnopengl\\top.jpg",
+	//	".\\Assets\\Textures\\Cubemaps\\learnopengl\\bottom.jpg",
+	//	".\\Assets\\Textures\\Cubemaps\\learnopengl\\front.jpg",
+	//	".\\Assets\\Textures\\Cubemaps\\learnopengl\\back.jpg" 
+	//};
 
-	std::vector<bool> flips{ false, false, false, false, false, false };
+	//std::vector<bool> flips{ false, false, false, false, false, false };
 
-	cubemap = std::make_shared<CubemapTexture>(faces, flips);
+	//cubemap = std::make_shared<CubemapTexture>(faces, flips);
 
 	/* Create materials */
 
-	Identifier defaultMaterialIdentifier = holder->AddNewMaterial<Material>();
-	Material& defaultMaterial = holder->GetHeldMaterial(defaultMaterialIdentifier);
-	defaultMaterial.shader->Set(SHADER_FROMPATH, ".\\Assets\\Shaders\\default.vert", ".\\Assets\\Shaders\\default.frag");
-	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Area4096.png", false	), "albedoMap");
-	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Normal.png", false		), "normalMap");
-	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Metallic.png", false	), "metallicMap");
-	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Roughness.png", false	), "roughnessMap");
-	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Ao.png", false			), "aoMap");
+	//BirdsongResult<Identifier> defaultMaterialIdentifier = holder->AddNewItem<Material>();
+	//if (defaultMaterialIdentifier.success) {
+	//	BirdsongResult_Ptr<Material> defaultMaterialResultPtr = holder->GetHeldItem<Material>(defaultMaterialIdentifier.item);
+	//	Material& defaultMaterial = *defaultMaterialResultPtr.item;
+	//	defaultMaterial.shader->Set(SHADER_FROMPATH, ".\\Assets\\Shaders\\default.vert", ".\\Assets\\Shaders\\default.frag");
+	//	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Area4096.png", false), "albedoMap");
+	//	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Normal.png", false), "normalMap");
+	//	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Metallic.png", false), "metallicMap");
+	//	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Roughness.png", false), "roughnessMap");
+	//	defaultMaterial.AddTexture(std::make_shared<Texture2D>(".\\Assets\\Textures\\Ao.png", false), "aoMap");
 
-	holder->renderPipelineHandler->mainRenderPipeline->EnrollMaterial(defaultMaterialIdentifier);
+	//	//holder->renderPipelineHandler->mainRenderPipeline->EnrollMaterial(defaultMaterialIdentifier);
+	//}
+	//else { std::cout << defaultMaterialIdentifier.info << std::endl; }
+
 
 	/* Create lights */
 
-	newLightIdentifier = holder->AddNewLight();
-	Light& newLight = holder->GetHeldLight(newLightIdentifier);
-	holder->renderPipelineHandler->mainRenderPipeline->EnrollLight(newLightIdentifier);
+	//newLightIdentifier = holder->AddNewItem<PointLight>();
+	//BirdsongResult_Ptr<PointLight> pointLight = holder->GetHeldItem<PointLight>(newLightIdentifier.item);
+	//holder->renderPipelineHandler->mainRenderPipeline->EnrollLight(newLightIdentifier);
 
 	/* Create meshes */
 
-	cubeMesh = holder->AddNewMesh(cubeVertices);
-	groundPlaneMesh = holder->AddNewMesh(groundPlaneVertices);
+	//cubeMesh = holder->AddNewItem<Mesh>(cubeVertices);
+	//groundPlaneMesh = holder->AddNewItem<Mesh>(groundPlaneVertices);
+
+	Result<Identifier> objectResult = this->holder->AddNewItem<Object>();
+	if (!objectResult.success) { objectResult.Print(); }
+
+	/*Result<Identifier> objectResult = this->holder->AddNewItem<Object>();
+	if (!objectResult.success) { objectResult.Print(); }*/
 
 	/* TODO : Create objects */
 
 	camera = std::make_shared<Camera>(applicationWindow);
 	
-	Object& groundPlane = holder->GetHeldObject(holder->AddNewObject(holder));
-	groundPlane.AddMesh(groundPlaneMesh, defaultMaterialIdentifier);
+	//BirdsongResult_Ptr<Object> groundPlane = holder->GetHeldItem<Object>(holder->AddNewItem<Object>(holder).item);
+	//groundPlane.item->AddMesh(groundPlaneMesh.item, defaultMaterialIdentifier.item);
 
-	object1Identifier = holder->AddNewObject(holder);
-	Object& object1 = holder->GetHeldObject(object1Identifier);
-	object1.AddMesh(cubeMesh, defaultMaterialIdentifier);
-	object1.transform->SetPosition(glm::vec3(0.0, 2.0, 0.0));
-	object1.transform->SetRotation(glm::quat(cos(glm::radians(45.0 * 0.5)), sin(glm::radians(45.0 * 0.5)), 0.0, 0.0));
+	//object1Identifier = holder->AddNewObject(holder);
+	//Object& object1 = holder->GetHeldObject(object1Identifier);
+	//object1.AddMesh(cubeMesh, defaultMaterialIdentifier);
+	//object1.transform->SetPosition(glm::vec3(0.0, 2.0, 0.0));
+	//object1.transform->SetRotation(glm::quat(cos(glm::radians(45.0 * 0.5)), sin(glm::radians(45.0 * 0.5)), 0.0, 0.0));
 
-	object1ChildIdentifier = holder->AddNewObject(holder);
-	Object& object1child = holder->GetHeldObject(object1ChildIdentifier);
-	object1child.AddMesh(cubeMesh, defaultMaterialIdentifier);
-	object1child.transform->SetParent(object1.transform.get());
-	object1child.transform->SetPosition(glm::vec3(2.0, 4.0, 0.0));
-	object1child.transform->SetLocalRotation(glm::quat(cos(glm::radians(45.0 * 0.5)), sin(glm::radians(45.0 * 0.5)), 0.0, 0.0));
+	//object1ChildIdentifier = holder->AddNewObject(holder);
+	//Object& object1child = holder->GetHeldObject(object1ChildIdentifier);
+	//object1child.AddMesh(cubeMesh, defaultMaterialIdentifier);
+	//object1child.transform->SetParent(object1.transform.get());
+	//object1child.transform->SetPosition(glm::vec3(2.0, 4.0, 0.0));
+	//object1child.transform->SetLocalRotation(glm::quat(cos(glm::radians(45.0 * 0.5)), sin(glm::radians(45.0 * 0.5)), 0.0, 0.0));
 
-	holder->renderPipelineHandler->mainRenderPipeline->Setup(camera);
+	//holder->renderPipelineHandler->mainRenderPipeline->Setup(camera);
 
 	//float objects = 5000;
 	//for (size_t i = 0; i < objects; i++) 
@@ -197,18 +208,21 @@ void Application::Update()
 
 	camera->Update();
 
-	Light& newLight = holder->GetHeldLight(newLightIdentifier);
-	//newLight.lightPosition = glm::vec3(glm::sin(glfwGetTime()) * -2.0f, 4.0f, -1.0f);
-	newLight.lightPosition = glm::vec3(2.0, 3.0, 1.0);
+	//Light& newLight = holder->GetHeldLight(newLightIdentifier);
+	////newLight.lightPosition = glm::vec3(glm::sin(glfwGetTime()) * -2.0f, 4.0f, -1.0f);
+	//newLight.SetPosition(glm::vec3(2.0, 3.0, 1.0));
 
-	Object& object1 = holder->GetHeldObject(object1Identifier);
+	//PointLight& newLight = holder->GetHeldLight<PointLight>(newLightIdentifier);
+	//newLight.SetPosition(glm::vec3(2.0, 3.0, 1.0));
+
+	//Object& object1 = holder->GetHeldObject(object1Identifier);
 	//object1.transform->SetPosition(glm::vec3(glm::sin(glfwGetTime()) * -3.4512, 1.0f, 0.0f));
 	//object1.transform->SetScale(glm::vec3((glm::sin(glfwGetTime()) + 1) * 0.5f + 1.0f, 1.0f, 1.0f));
 	/*object1.transform->SetRotation(glm::quat(cos(glm::radians(45.0 * 0.5)), sin(glm::radians(45.0 * 0.5)), 0.0, 0.0));*/
 	//object1.transform->SetRotation(glm::quat(0.853553, -0.146447, 0.353553, 0.353553));
 	
 	// Render using the main renderpipeline
-	holder->renderPipelineHandler->mainRenderPipeline->Render();
+	//holder->renderPipelineHandler->mainRenderPipeline->Render();
 
 	// Glfw
 	glfwSwapBuffers(applicationWindow);

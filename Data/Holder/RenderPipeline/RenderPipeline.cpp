@@ -1,72 +1,104 @@
 #include "RenderPipeline.h"
-#include "../Data/Holder/Holder.h"
 
-RenderPipeline::RenderPipeline(Holder* holder) : holder(holder)
-	{ }
-
-RenderPipeline::~RenderPipeline()
+BS_VOID RenderPipeline::Render()
 {
-
+	return BS_VOID(false, "RenderPipeline::Render() should never be called as RenderPipeline is just a base class.");
 }
 
-void RenderPipeline::EnrollMaterial(Identifier materialIdentifier)
+BS_VOID RenderPipeline::Setup()
 {
-	Material* material = &this->holder->GetHeldMaterial(materialIdentifier);
-
-	this->renderPipelineList.emplace(materialIdentifier.UUID, RenderPipelineMaterialElement(materialIdentifier, material));
+	return BS_VOID(false, "RenderPipeline::Setup() should never be called as RenderPipeline is just a base class.");
 }
 
-// TODO
-void RenderPipeline::DisenrollMaterial()
+Result<bool> RenderPipeline::isMaterialEnrolled(const Identifier& identifier)
 {
+	// Type is correct
+	if (identifier.typeID != typeid(Material))
+		return Result<bool>(false, "typeID of identifier in isMaterialEnrolled(identifier) needs to be the same as typeid(Material)");
+
+	// Check
+	if (this->heldElements.find(identifier.UUID) != this->heldElements.end())
+		return Result<bool>(true);
+	else
+		return Result<bool>(false);
 }
 
-void RenderPipeline::EnrollLight(Identifier lightIdentifier)
+BS_VOID RenderPipeline::EnrollMaterial(const Identifier& identifier, const Holder& holder)
 {
-	Light* light = &this->holder->GetHeldLight(lightIdentifier);
-	this->renderPipelineLights.emplace(lightIdentifier.UUID, light);
+	// Material isnt enrolled
+	Result<bool> materialEnrolled = this->isMaterialEnrolled(identifier);
+	if (!materialEnrolled.success)
+		return BS_VOID(false, materialEnrolled.info);
+
+	if (materialEnrolled.item)
+		return BS_VOID(false, "material of identifier in EnrollMaterial(identifier) is already enrolled");
+
+	// Material exists
+	Result_Ptr<Material> materialResult = holder.GetHeldItem<Material>(identifier);
+	if (!materialResult.success)
+		return BS_VOID(false, materialResult.info);
+
+	// Add
+	this->heldElements.emplace(identifier.UUID, PipelineElement(identifier, materialResult.item));
+	return BS_VOID(nullptr);
 }
 
-// TODO
-void RenderPipeline::DisenrollLight()
+BS_VOID RenderPipeline::DisenrollMaterial(const Identifier& identifier)
 {
+	// Material does exist
+	Result<bool> materialEnrolled = this->isMaterialEnrolled(identifier);
+	if (!materialEnrolled.success)
+		return BS_VOID(false, materialEnrolled.info);
+
+	if (!materialEnrolled.item)
+		return BS_VOID(false, "material of identifier in DisenrollMaterial(identifier) is not enrolled");
+
+	// Erase
+	this->heldElements.erase(identifier.UUID);
+	return BS_VOID(nullptr);
 }
 
-void RenderPipeline::EnrollMesh(Identifier meshIdentifier, std::shared_ptr<Transform> transform, Identifier materialIdentifier)
+Result<bool> RenderPipeline::isMeshEnrolled(const Identifier& material, const Identifier& mesh)
 {
-	// If the material doesnt exist in the renderlist we return
-	if (this->renderPipelineList.find(materialIdentifier.UUID) == renderPipelineList.end()) 
-		{ std::cout << "Mesh(" << meshIdentifier.UUID << ") could not be enrolled to material(" << materialIdentifier.UUID << ") due to the material itself not being enrolled." << std::endl; return; }
+	// Type is correct
+	if (mesh.typeID != typeid(Mesh))
+		return Result<bool>(false, "typeID of mesh in isMeshEnrolled(material, mesh) needs to be the same as typeid(Mesh)");
 
-	// If the mesh doesnt exist in the holder we return
-	if (this->holder->heldMeshes.find(meshIdentifier.UUID) == this->holder->heldMeshes.end())
-		{ std::cout << "Mesh(" << meshIdentifier.UUID << ") could not be enrolled to material(" << materialIdentifier.UUID << ") due to the mesh not existing in holder." << std::endl;  return; }
+	// Material is enrolled
+	Result<bool> materialEnrolled = this->isMaterialEnrolled(material);
+	if (!materialEnrolled.success)
+		return Result<bool>(false, materialEnrolled.info);
 
-	/* Checks wether this mesh is already enrolled under the material
-		* if yes then we add our transform to that element
-		* if no we create a new element and then move on as if yes 
-	*/
-	if (this->renderPipelineList.at(materialIdentifier.UUID).meshes.find(meshIdentifier.UUID) == this->renderPipelineList.at(materialIdentifier.UUID).meshes.end()) 
-		// It isnt enrolled so we need to add it
-		this->renderPipelineList.at(materialIdentifier.UUID).meshes.emplace(meshIdentifier.UUID, RenderPipelineMeshElement(meshIdentifier, &this->holder->GetHeldMesh(meshIdentifier)));
+	if (!materialEnrolled.item)
+		return Result<bool>(false, "material of material in isMeshEnrolled(material, mesh, transform) is not enrolled");
+
+	// Check
+	if (this->heldElements[material.UUID].meshes.find(mesh.UUID) != this->heldElements[material.UUID].meshes.end())
+		return Result<bool>(true);
+	else
+		return Result<bool>(false);
+}
+
+BS_VOID RenderPipeline::EnrollMesh(const Identifier& material, const Identifier& mesh, Transform* transform, const Holder& holder)
+{
+	// Mesh isnt enrolled
+	Result<bool> meshEnrolled = this->isMeshEnrolled(material, mesh);
+	if (!meshEnrolled.success)
+		return BS_VOID(false, meshEnrolled.info);
+
+	// Mesh exist
+	Result_Ptr<Mesh> meshResult = holder.GetHeldItem<Mesh>(mesh);
+	if (!meshResult.success)
+		return BS_VOID(false, meshResult.info);
 	
-	// Add our mesh transform to the already existing mesh
-	this->renderPipelineList.at(materialIdentifier.UUID).meshes.at(meshIdentifier.UUID).transforms.push_back(transform);
-}   
+	// Add our meshPart to the pipelineElement
+	if (!meshEnrolled.item)
+		this->heldElements[material.UUID].meshes.emplace(mesh.UUID, std::pair<Mesh*, std::vector<Transform*>>(meshResult.item, std::vector<Transform*>())); // Readable code
 
-// TODO
-void RenderPipeline::DisenrollMesh()
-{
+	// Add our transform to that meshPart
+	// TODO : Check if transform is already added
+	this->heldElements[material.UUID].meshes[mesh.UUID].second.push_back(transform);
+	// TODO : NEXT
+	
+return BS_VOID(nullptr);
 }
-
-void RenderPipeline::Setup(std::shared_ptr<Camera> camera)
-{
-	std::cout << "Setup() function on base RenderPipeline called. This is wrong and shouldnt happen. No setting up will occur.";
-}
-
-void RenderPipeline::Render()
-{
-	std::cout << "Render() function on base RenderPipeline called. This is wrong and shouldnt happen. No rendering will occur.";
-}
-
-

@@ -2,60 +2,118 @@
 
 #include <unordered_map>
 #include <iostream>
-#include <memory>
+#include <typeindex>
+#include <any>
 
-#include "../Identifier.h"
+#include <glad/glad.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
 
-//#include "..\Data\Holder\Holder.h"
-class Holder;
-
-#include "../Objects/Camera/Camera.h"
-
-#include "..\Data\Mesh\Mesh.h"
-class Mesh;
-
-#include "..\Data\Material\Material.h"
-class Material;
-
-#include "..\Components\Transform.h"
-class Transform;
-
+#include "..\Data\Holder\Holder.h"
+#include "..\Data\Core\Result.h"
+#include "..\Data\Core\Identifier.h"
+#include "..\Data\Holder\RenderPipeline\PipelineElement.h"
 #include "..\Objects\Lights\Light.h"
-class Light;
+#include "..\Data\Holder\Held.h"
+using HeldT = std::any;
 
-#include "RenderPipelineElements.h"
+#define STATIC_ASSERT_IS_DERIVED_LIGHT(T) \
+	static_assert(std::is_base_of<Light, T>::value, "T has to be derived from class Light");
 
-
-class RenderPipeline
-{
+class RenderPipeline {
 public:
-	RenderPipeline(Holder* holder);
-	~RenderPipeline();
+	virtual BS_VOID Render();
 
-	std::unordered_map<std::string, Light*> renderPipelineLights;
-	std::unordered_map<std::string, RenderPipelineMaterialElement> renderPipelineList;
+	virtual BS_VOID Setup();
 
-	/// <summary>
-	/// Adding or removing a material from a pass, currently just the default
-	/// </summary>
-	void EnrollMaterial(Identifier materialIdentifier), DisenrollMaterial();
+	template <typename T> 
+	bool isLightTypeHeld() const;
 
-	/// <summary>
-	/// Adding or removing a mesh from a pass/material
-	/// </summary>
-	void EnrollMesh(Identifier meshIdentifier, std::shared_ptr<Transform> transform, Identifier materialIdentifier), DisenrollMesh();
+	template <typename T>
+	BS_VOID AddLightType();
 
-	/// <summary>
-	/// Adding or removing a light
-	/// </summary>
-	/// <param name="lightIdentifier"></param>
-	void EnrollLight(Identifier lightIdentifier), DisenrollLight();
+	template <typename T>
+	BS_VOID RemoveLightType();
 
-	virtual void Setup(std::shared_ptr<Camera> camera);
+	template <typename T>
+	BS_VOID EnrollLight(const Identifier& identifier, const Holder& holder);
 
-	virtual void Render();
+	template <typename T>
+	BS_VOID DisenrollLight(const Identifier& identfier);
 
-	Holder* holder;
-	std::shared_ptr<Camera> camera;
+	Result<bool> isMaterialEnrolled(const Identifier& identifier);
+
+	BS_VOID EnrollMaterial(const Identifier& identifier, const Holder& holder);
+
+	BS_VOID DisenrollMaterial(const Identifier& identifier);
+
+	Result<bool> isMeshEnrolled(const Identifier& material, const Identifier& mesh);
+
+	BS_VOID EnrollMesh(const Identifier& material, const Identifier& mesh, Transform* transform, const Holder& holder);
+
+protected:
+	std::unordered_map<std::type_index, HeldT> heldLights;
+	std::unordered_map<std::string, PipelineElement> heldElements;
 };
 
+template<typename T>
+inline bool RenderPipeline::isLightTypeHeld() const
+{
+	STATIC_ASSERT_IS_DERIVED_LIGHT(T);
+	return this->heldLights.find(typeid(T)) != this->heldLights.end();
+}
+
+template<typename T>
+inline BS_VOID RenderPipeline::AddLightType()
+{
+	STATIC_ASSERT_IS_DERIVED_LIGHT(T);
+	if (this->isLightTypeHeld<T>())
+		return BS_VOID(false, "Cannot add new light type T in AddLightType<T>() due it already existing");
+
+	this->heldLights.emplace(typeid(T), HeldType_Ptr<T>());
+	return BS_VOID(nullptr);
+}
+
+template<typename T>
+inline BS_VOID RenderPipeline::RemoveLightType()
+{
+	STATIC_ASSERT_IS_DERIVED_LIGHT(T);
+	if (!this->isLightTypeHeld<T>())
+		return BS_VOID(false, "Cannot remove light type T in RemoveLightType<T>() due it not existing");
+
+	this->heldLights.erase(typeid(T));
+	return BS_VOID(false, "RemoveLightType() not implemented yet");
+}
+
+template<typename T>
+inline BS_VOID RenderPipeline::EnrollLight(const Identifier& identifier, const Holder& holder)
+{
+	STATIC_ASSERT_IS_DERIVED_LIGHT(T);
+	if (identifier.typeID != typeid(T))
+		return BS_VOID(false, "T and identifier.typeID in EnrollLight<T>(identifier, holder) has to match");
+	if (!this->isLightTypeHeld<T>())
+		return BS_VOID(false, "Cannot add light of type T due to T not being held");
+
+	HeldType_Ptr<T>& heldLightType = std::any_cast<HeldType_Ptr<T>&>(this->heldLights.at(typeid(T)));
+	Result_Ptr<T> heldLight = holder.GetHeldItem(identifier);
+	if (!heldLight.success) { return BS_VOID(false, heldLight.info); }
+
+	heldLightType.EnrollItem(identifier, heldLight.item);
+	return BS_VOID(nullptr);
+}
+
+template<typename T>
+inline BS_VOID RenderPipeline::DisenrollLight(const Identifier& identifier)
+{
+	STATIC_ASSERT_IS_DERIVED_LIGHT(T);
+	if (identifier.typeID != typeid(T))
+		return BS_VOID(false, "T and identifier.typeID in DisenrollLight<T>(identifier) has to match");
+	if (!this->isLightTypeHeld<T>())
+		return BS_VOID(false, "Cannot remove light of type T due to T not being held");
+
+	HeldType_Ptr<T>& heldLightType = std::any_cast<HeldType_Ptr<T>&>(this->heldLights.at(typeid(T)));
+
+	BS_VOID result = heldLightType.DisenrollItem(identifier);
+	if (result.success) { return BS_VOID(nullptr); }
+	else { return BS_VOID(false, result.info); }
+}
