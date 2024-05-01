@@ -1,0 +1,5 @@
+{
+	"vert": ".\\Assets\\Shaders\\Minimum\\minimum.vert",
+	"frag": ".\\Assets\\Shaders\\Minimum\\minimum.frag",
+	"geom": ""
+}

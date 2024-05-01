@@ -56,42 +56,74 @@ Result<bool> Object::isMeshEnrolled(const Identifier& identifier)
 		return Result<bool>(false);
 }
 
-BS_VOID Object::EnrollMesh(const Identifier& identifier, const Holder& holder)
+BIRD_VOID Object::EnrollMesh(const Identifier& identifier, Holder& holder)
 {
 	// Mesh isnt enrolled
 	Result<bool> meshEnrolled = this->isMeshEnrolled(identifier);
 	if (!meshEnrolled.success)
-		return BS_VOID(false, meshEnrolled.info);
+		return BIRD_VOID(false, meshEnrolled.info);
 
 	if (meshEnrolled.item)
-		return BS_VOID(false, "mesh of identifier in EnrollMesh(identifier) is already enrolled");
+		return BIRD_VOID(false, "mesh of identifier in EnrollMesh(identifier) is already enrolled");
 
 	// Mesh exists
 	Result_Ptr<Mesh> meshResult = holder.GetHeldItem<Mesh>(identifier);
 	if (!meshResult.success)
-		return BS_VOID(false, meshResult.info);
+		return BIRD_VOID(false, meshResult.info);
 
 	// Add
-	this->meshes.emplace(identifier.UUID, meshResult.item);
-	return BS_VOID(nullptr);
+	this->meshes.emplace(identifier.UUID, std::pair<const Identifier&, Mesh*>(identifier, meshResult.item));
+	return BIRD_VOID(nullptr);
 }
 
-BS_VOID Object::DisenrollMesh(const Identifier& identifier)
+BIRD_VOID Object::DisenrollMesh(const Identifier& identifier)
 {
 	// Mesh is enrolled
 	Result<bool> meshEnrolled = this->isMeshEnrolled(identifier);
 	if (!meshEnrolled.success)
-		return BS_VOID(false, meshEnrolled.info);
+		return BIRD_VOID(false, meshEnrolled.info);
 
 	if (!meshEnrolled.item)
-		return BS_VOID(false, "mesh of identifier in DisenrollMesh(identifier) is not enrolled");
+		return BIRD_VOID(false, "mesh of identifier in DisenrollMesh(identifier) is not enrolled");
 
 	// Erase
 	this->meshes.erase(identifier.UUID);
-	return BS_VOID(nullptr);
+	return BIRD_VOID(nullptr);
 }
 
 Result<int> Object::MeshesEnrolled()
 {
 	return Result<int>(this->meshes.size());
+}
+
+BIRD_VOID Object::SetMaterial(const Identifier& identifier, Holder& holder, RenderPipeline& pipeline)
+{
+	BIRD_VOID result = BIRD_VOID(nullptr);
+
+
+	for (auto& mesh : this->meshes)
+	{
+		result = pipeline.DisenrollMesh(identifier, mesh.second.first, this);
+		if (!result.success) result.Print();
+		result = pipeline.EnrollMesh(identifier, mesh.second.first, this, holder);
+		if (!result.success) result.Print();
+	}
+
+	return result; // Return the last error message if there is one
+}
+
+BIRD_VOID Object::SetMaterial(const Identifier& materialIdentifier, const Identifier& meshIdentifier, Holder& holder, RenderPipeline& pipeline)
+{
+	// Mesh is enrolled
+	Result<bool> meshEnrolled = this->isMeshEnrolled(meshIdentifier);
+	if (!meshEnrolled.success)
+		return BIRD_VOID(false, meshEnrolled.info);
+
+	if (!meshEnrolled.item)
+		return BIRD_VOID(false, "mesh of meshIdentifier in SetMaterial(materialIdentifier, meshIdentifier, pipeline) is not enrolled");
+
+	BIRD_VOID result = pipeline.DisenrollMesh(materialIdentifier, meshIdentifier, this);
+	BIRD_VOID result_2 = pipeline.EnrollMesh(materialIdentifier, meshIdentifier, this, holder);
+	
+	return BIRD_VOID(false, result.info + "\n" + result_2.info);
 }

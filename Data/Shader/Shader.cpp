@@ -6,35 +6,52 @@ Shader::Shader()
 	this->geometryShaderID = 0;
 	this->vertexShaderID = 0;
 	this->shaderProgramId = 0;
+	this->destroyOnDestruct = true;
 }
 Shader::Shader(SHADER_FROM from, const char* vertex, const char* fragment) 
 {
 	this->Set(from, vertex, fragment);
-
-	//this->shaderProgramId = 0;
-
-	//if (from == SHADER_FROMCODE)
-	//	CreateShaderFromCode(vertex, fragment);
-	//else if (from == SHADER_FROMPATH)
-	//	CreateShaderFromPath(vertex, fragment);
+	this->destroyOnDestruct = true;
 }
-Shader::~Shader() { glDeleteProgram(this->shaderProgramId); }
+
+Shader::Shader(Shader&& other) noexcept
+{
+	this->fragmentShaderID = other.fragmentShaderID;
+	this->geometryShaderID = other.geometryShaderID;
+	this->vertexShaderID = other.vertexShaderID;
+	this->shaderProgramId = other.shaderProgramId;
+
+	other.destroyOnDestruct = false;
+	this->destroyOnDestruct = true;
+}
+
+Shader::~Shader()
+{ 
+	if (this->destroyOnDestruct)
+	{
+		glDeleteProgram(this->shaderProgramId);
+		std::cout << "Delted" << std::endl;
+	}
+}
 
 void Shader::Use() { glUseProgram(this->shaderProgramId); }
 
 void Shader::Set(SHADER_FROM from, const char* vertex, const char* fragment)
 {
-	//this->SetVert(from, vertex);
-	//this->SetFrag(from, fragment);
-	//this->LinkProgram();
+	if (glIsProgram(this->shaderProgramId) == GL_TRUE)
+	{
+		glDeleteProgram(this->shaderProgramId);
+		std::cout << "Delted" << std::endl;
+	}
 
-	glDeleteProgram(this->shaderProgramId);
-	this->shaderProgramId = 0;
+	this->SetVert(from, vertex);
+	this->SetFrag(from, fragment);
+	this->LinkProgram();
 
-	if (from == SHADER_FROMCODE)
-		CreateShaderFromCode(vertex, fragment);
-	else if (from == SHADER_FROMPATH)
-		CreateShaderFromPath(vertex, fragment);
+	//if (from == SHADER_FROMCODE)
+	//	CreateShaderFromCode(vertex, fragment);
+	//else if (from == SHADER_FROMPATH)
+	//	CreateShaderFromPath(vertex, fragment);
 }
 
 void Shader::LinkProgram()
@@ -47,7 +64,11 @@ void Shader::LinkProgram()
 		int success;
 		char infoLog[1024];
 		
-		glDeleteProgram(this->shaderProgramId);
+		if (glIsProgram(this->shaderProgramId) == GL_TRUE) {
+			std::cout << "Deleted progra" << std::endl;
+			glDeleteProgram(this->shaderProgramId);
+		}
+
 		this->shaderProgramId = glCreateProgram();
 
 		if (isVertex)	{ glAttachShader(this->shaderProgramId, this->vertexShaderID); }

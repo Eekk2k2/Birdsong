@@ -2,16 +2,22 @@
 
 Material::Material()
 {
+	this->shader = nullptr;
+}
+
+Material::Material(const Identifier& identifier, Holder& holder)
+{
+	this->SetShader(identifier, holder);
 }
 
 Material::~Material()
 {
 }
 
-BS_VOID Material::Bind()
+BIRD_VOID Material::Use()
 {
 	if (this->shader == nullptr)
-		return BS_VOID(false, "Shader of Material is nullptr. To set the shader of a material use Material::SetShader()");
+		return BIRD_VOID(false, "Shader of Material is nullptr. To set the shader of a material use Material::SetShader()");
 
 	this->shader->Use();
 	int i = 0;
@@ -24,17 +30,17 @@ BS_VOID Material::Bind()
 		i++;
 	}
 
-	return BS_VOID(nullptr);
+	return BIRD_VOID(nullptr);
 }
 
-BS_VOID Material::SetShader(const Identifier& identifier, const Holder& holder)
+BIRD_VOID Material::SetShader(const Identifier& identifier, Holder& holder)
 {
 	Result_Ptr<Shader> shaderResult = holder.GetHeldItem<Shader>(identifier);
 	if (!shaderResult.success)
-		return BS_VOID(false, shaderResult.info);
+		return BIRD_VOID(false, shaderResult.info);
 
 	this->shader = shaderResult.item;
-	return BS_VOID(nullptr);
+	return BIRD_VOID(nullptr);
 }
 
 Result_Ptr<Shader> Material::GetShader()
@@ -53,45 +59,46 @@ Result<bool> Material::isTextureEnrolled(const Identifier& identifier)
 		return Result<bool>(false);
 }
 
-BS_VOID Material::EnrollTexture(std::string name, const Identifier& identifier, const Holder& holder)
+BIRD_VOID Material::EnrollTexture(std::string name, const Identifier& identifier, Holder& holder)
 {
 	// Texture isnt enrolled
 	Result<bool> textureEnrolled = this->isTextureEnrolled(identifier);
 	if (!textureEnrolled.success)
-		return BS_VOID(false, textureEnrolled.info);
+		return BIRD_VOID(false, textureEnrolled.info);
 
 	if (textureEnrolled.item)
-		return BS_VOID(false, "texture2d of identifier in EnrollTexture(name, identifier, holder) is already enrolled");
+		return BIRD_VOID(false, "texture2d of identifier in EnrollTexture(name, identifier, holder) is already enrolled");
 
 	// Texture exists
 	Result_Ptr<Texture2D> textureResult = holder.GetHeldItem<Texture2D>(identifier);
 	if (!textureResult.success)
-		return BS_VOID(false, textureResult.info);
+		return BIRD_VOID(false, textureResult.info);
 
 	// Add
 	this->textures.emplace(identifier.UUID, std::pair<std::string, Texture2D*>(name, textureResult.item));
-	return BS_VOID(nullptr);
+	return BIRD_VOID(nullptr);
 }
 
-BS_VOID Material::DisenrollTexture(const Identifier& identifier)
+BIRD_VOID Material::DisenrollTexture(const Identifier& identifier)
 {
 	// Texture does exist
 	Result<bool> textureEnrolled = this->isTextureEnrolled(identifier);
 	if (!textureEnrolled.success)
-		return BS_VOID(false, textureEnrolled.info);
+		return BIRD_VOID(false, textureEnrolled.info);
 
 	if (!textureEnrolled.item)
-		return BS_VOID(false, "texture2d of identifier in DisenrollMaterial(identifier) is not enrolled");
+		return BIRD_VOID(false, "texture2d of identifier in DisenrollMaterial(identifier) is not enrolled");
 
 	// Erase
 	this->textures.erase(identifier.UUID);
-	return BS_VOID(nullptr);
+	return BIRD_VOID(nullptr);
 }
 
 Result<int> Material::TexturesEnrolled()
 {
 	return Result<int>(this->textures.size());
 }
+
 
 //Material::Material(std::shared_ptr<Shader> shader, std::vector<std::shared_ptr<Texture2D>> textures) 
 //{

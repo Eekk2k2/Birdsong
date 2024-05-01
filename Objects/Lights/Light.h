@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/common.hpp>
 
-#include "..\Data\Holder\RenderPipeline\PipelineElement.h"
+#include "..\Data\RenderPipeline\PipelineElement.h"
 struct PipelineElement;
 #include "..\Data\Material\Material.h"
 class Material;

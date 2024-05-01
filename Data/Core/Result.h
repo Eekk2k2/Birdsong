@@ -5,7 +5,9 @@
 #include <string>
 #include <iostream>
 
-#define BS_VOID Result_Ptr<void>
+// Shorthand 
+#define BIRD_VOID Result_Ptr<void>
+#define BIRD_ID Result<Identifier>
 
 template <typename T>
 struct Result {

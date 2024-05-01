@@ -25,6 +25,8 @@ public:
 		Mesh(const Mesh& other),
 		~Mesh();
 
+	void Use();
+
 	void SetAllData(std::vector<float> data),
 		SetAllData(std::vector<float> data, std::vector<unsigned int> indices);
 

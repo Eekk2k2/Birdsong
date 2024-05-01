@@ -16,8 +16,9 @@
 typedef int SHADER_FROM;
 #endif
 
+#include <glad/glad.h>
+
 #include <vector>
-#include <glad/glad.h> // include glad to get all the required OpenGL headers
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -31,6 +32,8 @@ class Shader
 public:
 	Shader();
 	Shader(SHADER_FROM from, const char* vertex, const char* fragment);
+	Shader(const Shader& other) = default;
+	Shader(Shader&& other) noexcept;
 	~Shader();
 
 	void Use();
@@ -87,7 +90,7 @@ public:
 
 private:
 	const char* vertexShaderCodeError = R"(
-		#version 330 core
+		#version 430 core
 		layout (location = 0) in vec3 aPos;
 
 		uniform mat4 projection;
@@ -102,7 +105,7 @@ private:
 		)";
 
 	const char* fragmentErrorShaderCode = R"(
-		#version 330 core
+		#version 430 core
 		out vec4 FragColor;
 
 		void main()
@@ -124,6 +127,7 @@ private:
 	void CreateShaderFromCode(const char* vertexCode, const char* fragmentCode);
 
 	unsigned int fragmentShaderID, vertexShaderID, geometryShaderID, shaderProgramId;
+	bool destroyOnDestruct;
 };
 
 #endif

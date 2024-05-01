@@ -10,27 +10,38 @@
 #include "..\Data\Mesh\Mesh.h"
 #include "..\Components\Transform.h"
 
-struct PipelineElement {
-	PipelineElement() {}
+struct ElementMesh {
+	ElementMesh() = default;
+	ElementMesh(Mesh* _mesh, std::vector<Transform*> _transforms) : mesh(_mesh), transforms(_transforms) {};
+	Mesh* mesh;
+	std::vector<Transform*> transforms;
+};
 
+struct PipelineElement {
+	PipelineElement() = default;
 	PipelineElement(Identifier m_MaterialIdentifier, Material* m_Material)
 		: material(m_Material), materialIdentifier(m_MaterialIdentifier) {}
-
-	PipelineElement(PipelineElement&& other) noexcept
-		: material(std::move(other.material)), materialIdentifier(std::move(other.materialIdentifier)),
-		meshes(std::move(other.meshes)) {}
 
 	Material* material;
 	Identifier materialIdentifier;
 
-	using MeshIdentifierString = std::string;
-	using MeshTransforms = std::vector<Transform*>;
-	using MeshPart = std::pair<Mesh*, MeshTransforms>;
-
-	std::unordered_map<MeshIdentifierString, MeshPart> meshes;
+	std::unordered_map<std::string, ElementMesh> meshes;
 };
 #endif // !RENDERPIPELINE_S
 
+//ElementMesh(ElementMesh&& other) noexcept : mesh(other.mesh), transforms(std::move(other.transforms)) {}; // TODO 
+
+//using MeshIdentifierString = std::string;
+//using MeshTransforms = std::vector<Transform*>;
+//using MeshPart = std::pair<Mesh*, MeshTransforms>;
+
+//std::unordered_map<MeshIdentifierString, MeshPart> meshes;
+
+//PipelineElement(PipelineElement&& other) noexcept = default; // This
+
+//PipelineElement(PipelineElement&& other) noexcept
+//	: material(std::move(other.material)), materialIdentifier(std::move(other.materialIdentifier)), 
+//		meshes(std::move(other.meshes)) { }
 
 
 //#pragma once

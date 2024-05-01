@@ -84,14 +84,11 @@ void Camera::Update()
 	};
 
 	this->view = glm::lookAt(this->position, this->position + this->front, this->up);
-
-	/*this->cameraController->Controller();*/
 }
 
 glm::mat4 Camera::View() 
 {
 	return this->view;
-	//return this->cameraController->view;
 }
 
 glm::mat4 Camera::Projection() {

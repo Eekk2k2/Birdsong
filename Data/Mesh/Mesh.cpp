@@ -58,6 +58,11 @@ Mesh::~Mesh()
 	
 }
 
+void Mesh::Use()
+{
+	glBindVertexArray(this->GetVAO());
+}
+
 void Mesh::SetAllData(std::vector<float> data)
 {
 	this->data = data;

@@ -29,9 +29,7 @@
 
 #include "..\Data\Core\Result.h"
 #include "..\Data\Core\Identifier.h"
-
 #include ".\Held.h"
-using HeldT = std::any;
 
 #ifndef IsTemplateClassStruct
 #define IstemplateClassStruct
@@ -56,16 +54,16 @@ public:
     bool isTypeHeld() const;
 
     template <typename T>
-    BS_VOID AddHeldType();
+    BIRD_VOID AddHeldType();
 
     template <typename T, typename... Args>
     Result<Identifier> AddNewItem(Args&&... args);
 
-    template <typename T>
-    Result_Ptr<T> GetHeldItem(const Identifier& identifier) const; 
+    template <typename T, typename... Args>
+    Result<Identifier> AddNewItem(std::string forcedUUID, Args&&... args);
 
-    // Render Pipelines
-    // ...
+    template <typename T>
+    Result_Ptr<T> GetHeldItem(const Identifier& identifier); 
 
 private:
     std::unordered_map<std::type_index, HeldT> heldTypes;
@@ -78,18 +76,17 @@ inline bool Holder::isTypeHeld() const
     return heldTypes.find(typeid(T)) != heldTypes.end();
 }
 
-
 template<typename T>
-inline BS_VOID Holder::AddHeldType()
+inline BIRD_VOID Holder::AddHeldType()
 {
     // Checks
     STATIC_ASSERT_IS_TEMPLATE_CLASS(T);
     if (this->isTypeHeld<T>())
-        return BS_VOID(false, "Cannot add type T in AddHeldType<T>() because it already exists.");
+        return BIRD_VOID(false, "Cannot add type T in AddHeldType<T>() because it already exists.");
 
     // Adds
     heldTypes.emplace(typeid(T), HeldType<T>());
-    return BS_VOID(nullptr);
+    return BIRD_VOID(nullptr);
 }
 
 template<typename T, typename ...Args>
@@ -107,9 +104,8 @@ inline Result<Identifier> Holder::AddNewItem(Args&& ...args)
     return Result<Identifier>(newItemIdentifier);
 }
 
-
 template<typename T>
-inline Result_Ptr<T> Holder::GetHeldItem(const Identifier& identifier) const
+inline Result_Ptr<T> Holder::GetHeldItem(const Identifier& identifier)
 {
     // Checks
     STATIC_ASSERT_IS_TEMPLATE_CLASS(T);
@@ -118,6 +114,6 @@ inline Result_Ptr<T> Holder::GetHeldItem(const Identifier& identifier) const
 
     // Retrieve
     // TODO : Check if identifier acutally points to item T
-    HeldType<T>* heldType = std::any_cast<HeldType<T>*>(this->heldTypes.at(typeid(T)));
-    return heldType->RetrieveItemPointer(identifier);
+    HeldType<T>& heldType = std::any_cast<HeldType<T>&>(this->heldTypes.at(typeid(T)));
+    return heldType.RetrieveItemPointer(identifier);
 }

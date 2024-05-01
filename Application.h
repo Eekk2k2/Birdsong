@@ -18,6 +18,8 @@
 #include "Data/Shader/Shader.h"
 #include "Data/Shader/ComputeShader.h"
 
+#include "..\Data\RenderPipeline\RenderPipelineHandler.h"
+
 class Application
 {
 public:
@@ -31,6 +33,7 @@ public:
 	float timeSinceMaximize, timeSinceMinimize;
 
 	std::shared_ptr<Holder> holder;
+	RenderPipelineHandler pipelineHandler;
 
 	void Start(), Update();
 

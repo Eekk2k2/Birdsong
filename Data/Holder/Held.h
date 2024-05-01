@@ -23,22 +23,22 @@ struct HeldType {
 		else { return Result<bool>(false); }
 	}
 
-	BS_VOID EnrollItem(const Identifier& identifier, T item) {
+	BIRD_VOID EnrollItem(const Identifier& identifier, T item) {
 		if (identifier.typeID != typeid(T))
-			return BS_VOID(false, "typeID of identifier in HeldType<T>::EnrollItem(identifier) needs to be the same as typeid(T)");
+			return BIRD_VOID(false, "typeID of identifier in HeldType<T>::EnrollItem(identifier) needs to be the same as typeid(T)");
 
 		Result<bool> keyHeld = this->isKeyHeld(identifier);
-		if (!keyHeld.success) { return BS_VOID(false, keyHeld.info); }
-		if (keyHeld.item) { return BS_VOID(false, "Cannot enroll item in EnrollItem(identifier, item) as identifier is already enrolled"); }
+		if (!keyHeld.success) { return BIRD_VOID(false, keyHeld.info); }
+		if (keyHeld.item) { return BIRD_VOID(false, "Cannot enroll item in EnrollItem(identifier, item) as identifier is already enrolled"); }
 
 		this->held.emplace(identifier.UUID, item);
-		return BS_VOID(nullptr);
+		return BIRD_VOID(nullptr);
 	}
 
 	template <typename ...Args>
 	Result<Identifier> EnrollNewItem(Args&&... args) {
 		Identifier identifier = Identifier(GenerateUUID(), typeid(T));
-		this->held.emplace(identifier.UUID, T(std::forward<Args>(args)...));
+		this->held.emplace(identifier.UUID, std::move(T(std::forward<Args>(args)...)));
 		return Result<Identifier>(identifier);
 	}
 
@@ -67,28 +67,28 @@ struct HeldType_Ptr {
 		else { return Result<bool>(false); }
 	}
 
-	BS_VOID EnrollItem(const Identifier& identifier, T* item) {
+	BIRD_VOID EnrollItem(const Identifier& identifier, T* item) {
 		if (identifier.typeID != typeid(T))
-			return BS_VOID(false, "typeID of identifier in HeldType<T>::EnrollItem(identifier) needs to be the same as typeid(T)");
+			return BIRD_VOID(false, "typeID of identifier in HeldType<T>::EnrollItem(identifier) needs to be the same as typeid(T)");
 
 		Result<bool> keyHeld = this->isKeyHeld(identifier);
-		if (!keyHeld.success) { return BS_VOID(false, keyHeld.info); }
-		if (keyHeld.item) { return BS_VOID(false, "Cannot enroll item in EnrollItem(identifier, item) as identifier is already enrolled"); }
+		if (!keyHeld.success) { return BIRD_VOID(false, keyHeld.info); }
+		if (keyHeld.item) { return BIRD_VOID(false, "Cannot enroll item in EnrollItem(identifier, item) as identifier is already enrolled"); }
 
 		this->held.emplace(identifier.UUID, item);
-		return BS_VOID(nullptr);
+		return BIRD_VOID(nullptr);
 	}
 
-	BS_VOID DisenrollItem(const Identifier& identifier) {
+	BIRD_VOID DisenrollItem(const Identifier& identifier) {
 		if (identifier.typeID != typeid(T))
-			return BS_VOID(false, "typeID of identifier in HeldType<T>::DisenrollItem(identifier) needs to be the same as typeid(T)");
+			return BIRD_VOID(false, "typeID of identifier in HeldType<T>::DisenrollItem(identifier) needs to be the same as typeid(T)");
 
 		Result<bool> keyHeld = this->isKeyHeld(identifier);
-		if (!keyHeld.success) { return BS_VOID(false, keyHeld.info); }
-		if (!keyHeld.item) { return BS_VOID(false, "Cannot disenroll item in DisenrollItem(identifier) as identifier isnt enrolled"); }
+		if (!keyHeld.success) { return BIRD_VOID(false, keyHeld.info); }
+		if (!keyHeld.item) { return BIRD_VOID(false, "Cannot disenroll item in DisenrollItem(identifier) as identifier isnt enrolled"); }
 
 		this->held.erase(identifier.UUID);
-		return BS_VOID(nullptr);
+		return BIRD_VOID(nullptr);
 	}
 
 	// TODO : new T would create memory leaks as this HeldType_Ptr doesnt delete objects

@@ -7,6 +7,8 @@
 #include <sstream>
 #include <random>
 
+// SLOW : String comparisons yuck, use UINT32 instead 
+
 struct Identifier {
 	Identifier() : UUID(""), typeID(typeid(void)) { }
 	Identifier(std::string m_UUID) : UUID(m_UUID), typeID(typeid(void)) { }

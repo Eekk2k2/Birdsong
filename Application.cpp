@@ -14,7 +14,7 @@ Application::Application() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_SAMPLES, 4); // SLOW : Tanks the FPS when looking inside a cube for some reason
 
 	// Hides the command promt
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
@@ -45,6 +45,7 @@ Application::Application() {
 	glEnable(GL_MULTISAMPLE); 
 
 	holder = std::make_shared<Holder>();
+	this->pipelineHandler = RenderPipelineHandler(); 
 }
 
 Application::~Application() { }
@@ -52,52 +53,13 @@ Application::~Application() { }
 
 void Application::Start() {
 
-	std::vector<float> cubeVertices = {
-		// positions            // normals				// texcoords
-
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		1.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		0.0f, 0.0f,
-
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,		0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,		1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,		1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,		1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,		0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,		0.0f, 0.0f,
-
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,		1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,		1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,		0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,		0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,		0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,		1.0f, 0.0f,
-
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,		1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,		1.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,		0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,		0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,		0.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,		1.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,		0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,		1.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,		1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,		1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,		0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,		0.0f, 1.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,		0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,		1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,		1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,		1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,		0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,		0.0f, 1.0f
-	};
-
+	this->holder->AddHeldType<Object>();
+	
+	this->holder->AddHeldType<Shader>();
+	this->holder->AddHeldType<Texture2D>();
+	this->holder->AddHeldType<Material>();
+	this->holder->AddHeldType<Mesh>();
+	
 	std::vector<float> groundPlaneVertices = 
 	{
 		// Vertex 1
@@ -118,6 +80,73 @@ void Application::Start() {
 		// Vertex 6
 		-90.5, -1.0,  90.5,   0.0, 1.0, 0.0,   0.0, 0.0
 	};
+
+	camera = std::make_shared<Camera>(applicationWindow);
+	this->pipelineHandler.defaultRenderPipeline.camera = camera.get();
+
+	BIRD_ID objectIdentifier = this->holder->AddNewItem<Object>();
+	BIRD_ID meshIdentifier = this->holder->AddNewItem<Mesh>(groundPlaneVertices);
+	BIRD_ID shaderIdentifier = this->holder->AddNewItem<Shader>(SHADER_FROMPATH, ".\\Assets\\Shaders\\Debug\\min.vert", ".\\Assets\\Shaders\\Debug\\min.frag");
+	BIRD_ID materialIdentifier = this->holder->AddNewItem<Material>(shaderIdentifier.item, *this->holder.get());
+	if (materialIdentifier.success) {
+		this->pipelineHandler.defaultRenderPipeline.EnrollMaterial(materialIdentifier.item, *this->holder.get());
+	}
+	else { materialIdentifier.Print(); }
+
+	Result_Ptr<Object> objectResult = this->holder->GetHeldItem<Object>(objectIdentifier.item);
+	if (objectResult.success) { 
+		objectResult.item->EnrollMesh(meshIdentifier.item, *this->holder.get());
+		objectResult.item->SetMaterial(materialIdentifier.item, *this->holder.get(), this->pipelineHandler.defaultRenderPipeline);
+	} else { objectResult.Print(); }
+	
+	
+	//std::vector<float> cubeVertices = {
+	//	// positions            // normals				// texcoords
+
+	//	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		0.0f, 0.0f,
+	//	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		1.0f, 0.0f,
+	//	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		1.0f, 1.0f,
+	//	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		1.0f, 1.0f,
+	//	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		0.0f, 1.0f,
+	//	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,		0.0f, 0.0f,
+
+	//	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,		0.0f, 0.0f,
+	//	 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,		1.0f, 0.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,		1.0f, 1.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,		1.0f, 1.0f,
+	//	-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,		0.0f, 1.0f,
+	//	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,		0.0f, 0.0f,
+
+	//	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,		1.0f, 0.0f,
+	//	-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,		1.0f, 1.0f,
+	//	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,		0.0f, 1.0f,
+	//	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,		0.0f, 1.0f,
+	//	-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,		0.0f, 0.0f,
+	//	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,		1.0f, 0.0f,
+
+	//	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,		1.0f, 0.0f,
+	//	 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,		1.0f, 1.0f,
+	//	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,		0.0f, 1.0f,
+	//	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,		0.0f, 1.0f,
+	//	 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,		0.0f, 0.0f,
+	//	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,		1.0f, 0.0f,
+
+	//	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,		0.0f, 1.0f,
+	//	 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,		1.0f, 1.0f,
+	//	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,		1.0f, 0.0f,
+	//	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,		1.0f, 0.0f,
+	//	-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,		0.0f, 0.0f,
+	//	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,		0.0f, 1.0f,
+
+	//	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,		0.0f, 1.0f,
+	//	 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,		1.0f, 1.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,		1.0f, 0.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,		1.0f, 0.0f,
+	//	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,		0.0f, 0.0f,
+	//	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,		0.0f, 1.0f
+	//};
+
+
 
 	/* Create Cubemap */
 
@@ -164,16 +193,11 @@ void Application::Start() {
 	//cubeMesh = holder->AddNewItem<Mesh>(cubeVertices);
 	//groundPlaneMesh = holder->AddNewItem<Mesh>(groundPlaneVertices);
 
-	Result<Identifier> objectResult = this->holder->AddNewItem<Object>();
-	if (!objectResult.success) { objectResult.Print(); }
-
 	/*Result<Identifier> objectResult = this->holder->AddNewItem<Object>();
 	if (!objectResult.success) { objectResult.Print(); }*/
 
 	/* TODO : Create objects */
 
-	camera = std::make_shared<Camera>(applicationWindow);
-	
 	//BirdsongResult_Ptr<Object> groundPlane = holder->GetHeldItem<Object>(holder->AddNewItem<Object>(holder).item);
 	//groundPlane.item->AddMesh(groundPlaneMesh.item, defaultMaterialIdentifier.item);
 
@@ -208,6 +232,8 @@ void Application::Update()
 
 	camera->Update();
 
+	this->pipelineHandler.defaultRenderPipeline.Render();
+
 	//Light& newLight = holder->GetHeldLight(newLightIdentifier);
 	////newLight.lightPosition = glm::vec3(glm::sin(glfwGetTime()) * -2.0f, 4.0f, -1.0f);
 	//newLight.SetPosition(glm::vec3(2.0, 3.0, 1.0));
@@ -236,7 +262,10 @@ void Application::Update()
 	frame++;
 	if (frame == frameUpdate)
 	{
-		glfwSetWindowTitle(this->applicationWindow, std::to_string((int)(1.0f / deltaTime)).c_str()); 
+		std::string windowTitle = this->APP_NAME;
+		windowTitle += " | FPS: " + std::to_string((int)(1.0f / deltaTime));
+		windowTitle += " dT: " + std::to_string(deltaTime) + "ms";
+		glfwSetWindowTitle(this->applicationWindow, windowTitle.c_str());
 		
 		frame = 0;
 	}
